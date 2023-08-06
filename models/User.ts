@@ -6,15 +6,26 @@ export const ROLES = {
   Citizen: 'Citizen',
 };
 
+export interface IUser {
+  idNumber: string;
+  username: string;
+  password: string;
+  name: object;
+  phoneNumberList: [string];
+  email?: string;
+  role: string;
+}
+
 const userSchema = new Schema(
   {
-    username: String,
-    password: String,
+    idNumber: { type: String, required: true },
+    username: { type: String, required: true },
+    password: { type: String, required: true },
     name: {
       title: String,
-      firstName: String,
+      firstName: { type: String, required: true },
       middleName: String,
-      lastName: String,
+      lastName: { type: String, required: true },
     },
     phoneNumberList: [String],
     email: String,
@@ -25,5 +36,5 @@ const userSchema = new Schema(
   }
 );
 
-const User = model('user', userSchema);
+const User = model<IUser>('user', userSchema);
 export default User;
