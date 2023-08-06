@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 
 export const ROLES = {
   SuperAdmin: 'Super Admin', // Reserved for us developers
-  Admin: 'Admin',
+  Admin: 'Admin', // For municipality people
   Citizen: 'Citizen',
 };
 
@@ -11,6 +11,7 @@ const userSchema = new Schema(
     username: String,
     password: String,
     name: {
+      title: String,
       firstName: String,
       middleName: String,
       lastName: String,
@@ -24,4 +25,5 @@ const userSchema = new Schema(
   }
 );
 
-export const User = model('user', userSchema);
+const User = model('user', userSchema);
+export default User;
