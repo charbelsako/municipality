@@ -1,11 +1,19 @@
 import { Response } from 'express';
 
-export async function sendError(
-  res: Response,
-  error: any,
-  code: number,
-  errorLabel?: string
-) {
+interface ErrorObject {
+  res: Response;
+  error?: any;
+  code: number;
+  errorLabel?: string;
+}
+
+export async function sendError({
+  res,
+  error = undefined,
+  code,
+  errorLabel,
+}: ErrorObject) {
+  if (!error) return res.sendStatus(code);
   res.status(code).send(error);
 }
 
@@ -15,4 +23,8 @@ export async function sendResponse(res: Response, data: any) {
     data: data,
   };
   res.send(returnData);
+}
+
+export async function sendStatus(res: Response, code: number) {
+  res.sendStatus(code);
 }

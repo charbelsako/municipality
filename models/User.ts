@@ -14,6 +14,7 @@ export interface IUser {
   phoneNumberList: [string];
   email?: string;
   role: string;
+  refreshToken?: string;
 }
 
 export interface IName {
@@ -26,7 +27,7 @@ export interface IName {
 const userSchema = new Schema(
   {
     idNumber: { type: String, required: true },
-    username: { type: String, required: true },
+    username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     name: {
       title: String,
@@ -37,6 +38,7 @@ const userSchema = new Schema(
     phoneNumberList: [String],
     email: String,
     role: { type: String, enum: Object.values(ROLES) },
+    refreshToken: { type: String },
   },
   {
     timestamps: true,
@@ -44,4 +46,5 @@ const userSchema = new Schema(
 );
 
 const User = model<IUser>('user', userSchema);
+
 export default User;
