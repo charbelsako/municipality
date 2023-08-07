@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { sendError } from '../responseHandler';
+import { sendError, sendStatus } from '../responseHandler';
+import { statusCodes } from '../constants';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -20,7 +21,6 @@ export async function verifyJWT(
   try {
     const authHeader = req.headers['authorization'];
     if (!authHeader) return res.sendStatus(401);
-    console.log(authHeader);
 
     const token: string = authHeader.split(' ')[1];
     const decoded = await jwt.verify(
@@ -30,6 +30,6 @@ export async function verifyJWT(
     req.user = (<TokenData>decoded).username;
     next();
   } catch (verifyJWTError) {
-    sendError(res, verifyJWTError, 403);
+    sendStatus(res, statusCodes.FORBIDDEN);
   }
 }
