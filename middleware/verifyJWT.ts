@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { sendError, sendStatus } from '../responseHandler';
+import { sendStatus } from '../responseHandler';
 import { statusCodes } from '../constants';
 
 declare module 'express-serve-static-core' {
