@@ -1,19 +1,26 @@
 import { Schema, model } from 'mongoose';
 
 export const ROLES = {
-  SuperAdmin: 'Super Admin', // Reserved for us developers
-  Admin: 'Admin', // For municipality people
-  Citizen: 'Citizen',
+  SUPER_ADMIN: 'Super Admin', // Reserved for us developers
+  ADMIN: 'Admin', // For municipality people
+  CITIZEN: 'Citizen',
 };
 
 export interface IUser {
   idNumber: string;
   username: string;
   password: string;
-  name: object;
+  name: IName;
   phoneNumberList: [string];
   email?: string;
   role: string;
+}
+
+export interface IName {
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  title?: string;
 }
 
 const userSchema = new Schema(
