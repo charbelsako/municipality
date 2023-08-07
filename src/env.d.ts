@@ -7,7 +7,7 @@ declare module 'express-serve-static-core' {
 declare global {
   namespace NodeJS {
     export interface ProcessEnv {
-      NODE_ENV: 'development' | 'test';
+      NODE_ENV: 'development' | 'test' | 'production';
       MONGO_URI: string;
     }
   }
