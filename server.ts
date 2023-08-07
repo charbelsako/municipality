@@ -11,11 +11,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // routes
 app.use('/auth', authRouter);
-// console.log(process.env.MONGO_URI);
 
 // connect to database
 const uri: string = process.env.MONGO_URI as string;
 mongoose.connect(uri);
+console.log('Connect to the database');
 
 app.get('/', (req, res) => res.send('working'));
 
