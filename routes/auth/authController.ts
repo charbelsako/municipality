@@ -9,51 +9,45 @@ import { TokenData } from '../../middleware/verifyJWT';
 
 export async function handleLogin(req: Request, res: Response) {
   try {
-    console.log(1);
     const { username, password } = req.body;
     if (!username || !password)
       return sendError({
         res,
         error: { message: 'Username and password are required.' },
-        code: 400,
+        code: statusCodes.BAD_REQUEST,
       });
-    console.log(2);
 
     const foundUser: any = await User.findOne({ username });
-    if (!foundUser) return sendError({ res, code: 401 }); //Unauthorized
+    if (!foundUser) return sendError({ res, code: statusCodes.UNAUTHORIZED }); //Unauthorized
 
     // evaluate password
     const match = await bcrypt.compare(password, foundUser.password);
-    console.log('Everything okay');
     if (!match) {
-      return sendError({ res, code: 401 });
+      return sendError({ res, code: statusCodes.UNAUTHORIZED });
     }
-    console.log('password match');
     // create JWTs
     const accessToken = jwt.sign(
       { username: username },
       process.env.ACCESS_TOKEN_SECRET as string,
       { expiresIn: '30s' }
     );
-    console.log('access token created');
+
     const refreshToken = jwt.sign(
       { username },
       process.env.REFRESH_TOKEN_SECRET as string,
       { expiresIn: '1d' }
     );
-    console.log('access token created');
 
     // ! TODO save refresh token
     foundUser.refreshToken = refreshToken;
     await foundUser.save();
-    console.log('Everything is really okay');
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       sameSite: 'none',
       maxAge: 24 * 60 * 60 * 1000,
     });
-    console.log('Everything okay');
+
     sendResponse(res, { accessToken });
   } catch (loginError) {
     sendError({ res, error: loginError, code: 500 });
@@ -74,8 +68,9 @@ export async function handleRefreshToken(req: Request, res: Response) {
       await jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string)
     );
 
-    if (foundUser.username !== token.username)
+    if (foundUser.username !== token.username) {
       return sendError({ res, code: statusCodes.FORBIDDEN });
+    }
 
     const accessToken = await jwt.sign(
       { username: token.username },
