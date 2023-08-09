@@ -9,6 +9,7 @@ import { TokenData } from '../../middleware/verifyJWT';
 
 export async function handleLogin(req: Request, res: Response) {
   try {
+    console.log(1);
     const { username, password } = req.body;
     if (!username || !password)
       return sendError({
@@ -16,36 +17,44 @@ export async function handleLogin(req: Request, res: Response) {
         error: { message: 'Username and password are required.' },
         code: 400,
       });
+    console.log(2);
 
     const foundUser: any = await User.findOne({ username });
     if (!foundUser) return sendError({ res, code: 401 }); //Unauthorized
 
     // evaluate password
     const match = await bcrypt.compare(password, foundUser.password);
+    console.log('Everything okay');
     if (!match) {
       return sendError({ res, code: 401 });
     }
+    console.log('password match');
     // create JWTs
     const accessToken = jwt.sign(
       { username: username },
       process.env.ACCESS_TOKEN_SECRET as string,
       { expiresIn: '30s' }
     );
+    console.log('access token created');
     const refreshToken = jwt.sign(
       { username },
       process.env.REFRESH_TOKEN_SECRET as string,
       { expiresIn: '1d' }
     );
+    console.log('access token created');
+
     // ! TODO save refresh token
     foundUser.refreshToken = refreshToken;
     await foundUser.save();
+    console.log('Everything is really okay');
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       sameSite: 'none',
       maxAge: 24 * 60 * 60 * 1000,
     });
-    res.json({ accessToken });
+    console.log('Everything okay');
+    sendResponse(res, { accessToken });
   } catch (loginError) {
     sendError({ res, error: loginError, code: 500 });
   }
