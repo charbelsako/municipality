@@ -1,6 +1,7 @@
 import express from 'express';
 import { verifyJWT } from '../../middleware/verifyJWT';
-import { handleCreateAdmin } from './userController';
+import { handleCreateAdmin, handleCreateCitizen } from './userController';
+
 const router = express.Router();
 
 /**
@@ -9,7 +10,7 @@ const router = express.Router();
  * @access private (Super admin)
  * @method POST
  */
-router.post('/create-admin', handleCreateAdmin);
+router.post('/create-admin', verifyJWT, handleCreateAdmin);
 
 /**
  * @route /api/v1/auth/create-citizen
@@ -17,8 +18,6 @@ router.post('/create-admin', handleCreateAdmin);
  * @access Admins only
  * @method POST
  */
-router.post('/create-citizen', verifyJWT, (req, res) => {
-  res.send('Not implemented yet');
-});
+router.post('/create-citizen', handleCreateCitizen);
 
 export default router;

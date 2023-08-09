@@ -1,7 +1,7 @@
 import validator from 'validator';
 import { IUser } from '../models/User';
 
-export function validateSignUp(data: IUser) {
+export function validateCreateCitizen(data: IUser) {
   let isValid: boolean = false;
   const errors: any = {};
   data.username = data.username || '';

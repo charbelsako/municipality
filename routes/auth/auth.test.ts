@@ -1,39 +1,10 @@
 import { handleLogin, handleRefreshToken } from './authController';
-import User from '../../models/User'; // Import your User model
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { statusCodes } from '../../constants';
-
-// Fixtures
-const userData = {
-  username: 'testuser',
-  password: 'hashedPassword',
-  refreshToken: null,
-};
-const accessTokenString: any = 'mockAccessToken';
-const mockUser = new User(userData);
-// Mock User.findOne to return a valid user
-User.findOne = jest.fn().mockResolvedValue(mockUser);
-mockUser.save = jest.fn().mockResolvedValue(mockUser);
-// Mock bcrypt.compare to always return true for testing purposes
-jest.spyOn(bcrypt, 'compare').mockResolvedValue(<never>true);
-// Mock jwt.sign to return a mock token
-jest.spyOn(jwt, 'sign').mockReturnValue(accessTokenString);
-let sendMock = jest.fn();
-const cookieMock = jest.fn();
-let statusMock = jest.fn(() => ({ send: sendMock }));
-let sendStatusMock = jest.fn(() => ({ send: sendMock }));
-const res: any = {
-  send: sendMock,
-  status: statusMock,
-  json: jest.fn(),
-  cookie: cookieMock,
-  sendStatus: sendStatusMock,
-};
-const newAccessToken = {
-  data: { accessToken: 'mockAccessToken' },
-  success: true,
-};
+import { res } from '../../fixtures';
+import { userData } from '../user/fixtures';
+import { accessTokenString, newAccessToken } from './fixtures';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -47,7 +18,7 @@ describe('Authentication Tests', () => {
       };
       await handleLogin(req, res);
 
-      expect(sendMock).toHaveBeenCalledWith({
+      expect(res.send).toHaveBeenCalledWith({
         data: { accessToken: accessTokenString },
         success: true,
       });

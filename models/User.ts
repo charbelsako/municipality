@@ -1,5 +1,41 @@
 import { Schema, model } from 'mongoose';
 
+export const SECTS = {
+  ARMENIAN_ORTHODOX: 'ارمن ارثوذكس',
+  ARMENIAN_PROTESTANT: 'ارمن بروتستانت',
+  ARMENIAN_CATHOLIC: 'ارمن كاثوليك',
+  ASSYRIAN: 'اشوري',
+  EVANGELICAL: 'انجيلي (بروتستانت)',
+  ROMAN_ORTHODOX: 'روم ارثوذكس',
+  ROMAN_CATHOLIC: 'روم كاثوليك',
+  SYRIAC_CATHOLIC: 'سريان كاثوليك',
+  SYRIAC_ORTHODOX: 'سريان ارثوذكس',
+  JEHOVAH_WITNESS: 'يهوه يهوه',
+  COPTIC: 'قبطي',
+  COPTIC_ORTHODOX: 'قبطي ارثوذكس',
+  COPTIC_CATHOLIC: 'قبطي كاثوليك',
+  CHALDEAN: 'كلدان',
+  CHALDEAN_ORTHODOX: 'كلدان ارثوذكس',
+  CHALDEAN_CATHOLIC: 'كلدان كاثوليك',
+  LATIN: 'لاتيني',
+  MARONITE: 'ماروني',
+  CHRISTIAN: 'مسيحي',
+  NESTORIAN: 'نسطوري',
+  ISMAILI: 'اسماعيليي',
+  DRUZE: 'درزي',
+  SUNNI: 'سني',
+  SHIITE: 'شيعي',
+  ALAWITE: 'علوي',
+  ISRAELI: 'اسرائيلي',
+  BAHAI: 'بهائي',
+  BUDDHIST: 'بوذي',
+  HINDU: 'هندوسي',
+  UNSPECIFIED: 'غير مذكور',
+  OTHER: 'مختلف',
+  TO_CHECK: 'للتدقيق',
+  NON_SECTARIAN: 'لا طائفي',
+};
+
 export const ROLES = {
   SUPER_ADMIN: 'Super Admin', // Reserved for us developers
   ADMIN: 'Admin', // For municipality people
@@ -7,7 +43,6 @@ export const ROLES = {
 };
 
 export interface IUser {
-  idNumber: string;
   username: string;
   password: string;
   name: IName;
@@ -15,25 +50,48 @@ export interface IUser {
   email?: string;
   role: string;
   refreshToken?: string;
+  personalInfo: IPersonalInfo;
+  sex: string;
+  recordInfo: IRecordInfo;
+  dateOfBirth: Date;
 }
 
 export interface IName {
   firstName: string;
-  middleName?: string;
+  fatherName?: string;
+  motherName?: string;
   lastName: string;
-  title?: string;
 }
+
+export interface IPersonalInfo {
+  sect: string;
+}
+
+export interface IRecordInfo {
+  sect: string;
+  number: number;
+}
+
+const SEXES = { MALE: 'ذكر', FEMALE: 'أنثى' };
 
 const userSchema = new Schema(
   {
-    idNumber: { type: String, required: true },
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    sex: { type: String, enum: Object.values(SEXES) },
     name: {
-      title: String,
       firstName: { type: String, required: true },
-      middleName: String,
+      fatherName: String,
+      motherName: String,
       lastName: { type: String, required: true },
+    },
+    personalInfo: {
+      sect: { type: String, enum: Object.values(SECTS) }, // مذهب
+    },
+    dateOfBirth: Date,
+    recordInfo: {
+      sect: { type: String, enum: Object.values(SECTS) },
+      number: Number,
     },
     phoneNumberList: [String],
     email: String,
