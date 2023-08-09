@@ -1,6 +1,3 @@
-import User from './models/User';
-import { userData } from './routes/user/fixtures';
-
 export const sendMock = jest.fn();
 export const cookieMock = jest.fn();
 export const statusMock = jest.fn(() => ({ send: sendMock }));

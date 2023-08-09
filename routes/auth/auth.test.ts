@@ -5,6 +5,18 @@ import { statusCodes } from '../../constants';
 import { res } from '../../fixtures';
 import { userData } from '../user/fixtures';
 import { accessTokenString, newAccessToken } from './fixtures';
+import User from '../../models/User';
+
+const mockUser = new User(userData);
+// this is used after fetching the user with .findOne
+mockUser.save = jest.fn().mockResolvedValue(mockUser);
+
+User.findOne = jest.fn().mockResolvedValue(mockUser);
+
+// Mock bcrypt.compare to always return true for testing purposes
+jest.spyOn(bcrypt, 'compare').mockResolvedValue(<never>true);
+// Mock jwt.sign to return a mock token
+jest.spyOn(jwt, 'sign').mockReturnValue(accessTokenString);
 
 afterEach(() => {
   jest.clearAllMocks();

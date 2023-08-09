@@ -4,13 +4,13 @@ import { IUser } from '../models/User';
 export function validateCreateCitizen(data: IUser) {
   let isValid: boolean = false;
   const errors: any = {};
-  data.username = data.username || '';
+  data.email = data.email || '';
   data.password = data.password || '';
   data.name.firstName = data.name.firstName || '';
   data.name.lastName = data.name.lastName || '';
 
-  if (validator.isEmpty(data.username)) {
-    errors.username = 'Username is empty';
+  if (validator.isEmpty(data.email)) {
+    errors.email = 'Email is empty';
   }
   if (!validator.isStrongPassword(data.password)) {
     console.log('what');

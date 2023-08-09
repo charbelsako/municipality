@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import { statusCodes } from './constants';
 
 interface ErrorObject {
   res: Response;
@@ -22,7 +23,7 @@ export async function sendResponse(res: Response, data: any) {
     success: true,
     data: data,
   };
-  res.send(returnData);
+  res.status(statusCodes.OK).send(returnData);
 }
 
 export async function sendStatus(res: Response, code: number) {

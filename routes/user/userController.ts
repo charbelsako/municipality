@@ -9,7 +9,6 @@ import { statusCodes } from '../../constants';
 export async function handleCreateAdmin(req: Request, res: Response) {
   try {
     const {
-      username,
       password,
       phoneNumbers,
       name,
@@ -19,19 +18,22 @@ export async function handleCreateAdmin(req: Request, res: Response) {
       personalSect,
       recordSect,
       recordNumber,
+      email,
     } = req.body;
 
-    const validationError = validateSignUp({
-      username,
+    const data = {
+      email,
       password,
       name,
       phoneNumberList: phoneNumbers,
-      role: role,
       dateOfBirth,
       personalInfo: { sect: personalSect },
       sex,
       recordInfo: { number: recordNumber, sect: recordSect },
-    });
+      role: ROLES.ADMIN,
+    };
+
+    const validationError = validateSignUp(data);
 
     if (!validationError.isValid) {
       return sendError({
@@ -46,12 +48,10 @@ export async function handleCreateAdmin(req: Request, res: Response) {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const userData = new User({
-      username,
+      ...data,
       password: hashedPassword,
-      phoneNumberList: phoneNumbers,
-      name: name,
-      role: ROLES.ADMIN,
     });
+
     await userData.save();
 
     sendResponse(res, userData);
@@ -63,7 +63,6 @@ export async function handleCreateAdmin(req: Request, res: Response) {
 export async function handleCreateCitizen(req: Request, res: Response) {
   try {
     const {
-      username,
       password,
       phoneNumbers,
       name,
@@ -72,10 +71,11 @@ export async function handleCreateCitizen(req: Request, res: Response) {
       personalSect,
       recordSect,
       recordNumber,
+      email,
     } = req.body;
 
     const data = {
-      username,
+      email,
       password,
       name,
       phoneNumberList: phoneNumbers,
@@ -100,7 +100,7 @@ export async function handleCreateCitizen(req: Request, res: Response) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const userData = new User(data);
+    const userData = new User({ ...data, password: hashedPassword });
     await userData.save();
 
     sendResponse(res, userData);

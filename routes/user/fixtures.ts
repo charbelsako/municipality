@@ -1,13 +1,21 @@
-import User from '../../models/User';
-
 export const userData = {
   username: 'testuser',
   password: 'hashedPassword',
   refreshToken: null,
 };
 
-export const mockUser = new User(userData);
-mockUser.save = jest.fn().mockResolvedValue(mockUser);
-
-// Mock User.findOne to return a valid user
-User.findOne = jest.fn().mockResolvedValue(mockUser);
+export const mockCitizenData = {
+  username: 'nothing2',
+  email: 'abin@abin.com',
+  password: '12345678Ee#',
+  name: {
+    firstName: 'Abin',
+    lastName: 'Punnoose',
+    fatherName: 'Doe',
+    motherName: 'Doe',
+  },
+  personalSect: 'مختلف',
+  recordNumber: 2029,
+  recordSect: 'مختلف',
+  role: 'Citizen',
+};

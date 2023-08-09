@@ -43,11 +43,10 @@ export const ROLES = {
 };
 
 export interface IUser {
-  username: string;
   password: string;
   name: IName;
   phoneNumberList: [string];
-  email?: string;
+  email: string;
   role: string;
   refreshToken?: string;
   personalInfo: IPersonalInfo;
