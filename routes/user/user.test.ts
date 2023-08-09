@@ -26,5 +26,14 @@ describe('User Routes', () => {
     // expect(res.send).toHaveBeenCalledWith({});
     expect(res.status).toHaveBeenCalledWith(200);
   });
-  it('Should create an admin user', async () => {});
+  it('Should create an admin user', async () => {
+    const req: any = {
+      body: mockCitizenData,
+    };
+    await handleCreateAdmin(req, res);
+
+    expect(res.send).toHaveBeenCalledTimes(1);
+    // expect(res.send).toHaveBeenCalledWith({});
+    expect(res.status).toHaveBeenCalledWith(200);
+  });
 });

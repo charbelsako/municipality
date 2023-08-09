@@ -10,7 +10,7 @@ declare module 'express-serve-static-core' {
 }
 
 export interface TokenData {
-  username: string;
+  email: string;
 }
 
 export async function verifyJWT(
@@ -28,7 +28,7 @@ export async function verifyJWT(
       token,
       process.env.ACCESS_TOKEN_SECRET as string
     );
-    req.user = (<TokenData>decoded).username;
+    req.user = (<TokenData>decoded).email;
     next();
   } catch (verifyJWTError) {
     sendStatus(res, statusCodes.FORBIDDEN);

@@ -26,7 +26,7 @@ describe('Authentication Tests', () => {
   describe('Login Route', () => {
     it('should handle successful login', async () => {
       const req: any = {
-        body: { username: userData.username, password: userData.password },
+        body: { email: userData.email, password: userData.password },
       };
       await handleLogin(req, res);
 
@@ -56,7 +56,7 @@ describe('Authentication Tests', () => {
 
     it('Should fail if password is wrong', async () => {
       const req: any = {
-        body: { username: 'someone', password: 'thisIsAPassword' },
+        body: { email: 'someone', password: 'thisIsAPassword' },
       };
       jest.spyOn(bcrypt, 'compare').mockResolvedValueOnce(<never>false);
       await handleLogin(req, res);
@@ -69,9 +69,7 @@ describe('Authentication Tests', () => {
       const req: any = {
         cookies: { refreshToken: 'refreshToken' },
       };
-      jest
-        .spyOn(jwt, 'verify')
-        .mockReturnValue(<any>{ username: userData.username });
+      jest.spyOn(jwt, 'verify').mockReturnValue(<any>{ email: userData.email });
 
       await handleRefreshToken(req, res);
       expect(res.send).toHaveBeenCalledTimes(1);
@@ -84,7 +82,7 @@ describe('Authentication Tests', () => {
       };
       jest
         .spyOn(jwt, 'verify')
-        .mockReturnValue(<any>{ username: 'nothing important' });
+        .mockReturnValue(<any>{ email: 'nothing@important' });
 
       await handleRefreshToken(req, res);
 

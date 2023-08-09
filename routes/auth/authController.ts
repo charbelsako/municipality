@@ -9,15 +9,15 @@ import { TokenData } from '../../middleware/verifyJWT';
 
 export async function handleLogin(req: Request, res: Response) {
   try {
-    const { username, password } = req.body;
-    if (!username || !password)
+    const { email, password } = req.body;
+    if (!email || !password)
       return sendError({
         res,
-        error: { message: 'Username and password are required.' },
+        error: { message: 'Email and password are required.' },
         code: statusCodes.BAD_REQUEST,
       });
 
-    const foundUser: any = await User.findOne({ username });
+    const foundUser: any = await User.findOne({ email });
     if (!foundUser) return sendError({ res, code: statusCodes.UNAUTHORIZED }); //Unauthorized
 
     // evaluate password
@@ -27,13 +27,13 @@ export async function handleLogin(req: Request, res: Response) {
     }
     // create JWTs
     const accessToken = jwt.sign(
-      { username: username },
+      { email },
       process.env.ACCESS_TOKEN_SECRET as string,
       { expiresIn: '30s' }
     );
 
     const refreshToken = jwt.sign(
-      { username },
+      { email },
       process.env.REFRESH_TOKEN_SECRET as string,
       { expiresIn: '1d' }
     );
@@ -68,12 +68,12 @@ export async function handleRefreshToken(req: Request, res: Response) {
       await jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string)
     );
 
-    if (foundUser.username !== token.username) {
+    if (foundUser.email !== token.email) {
       return sendError({ res, code: statusCodes.FORBIDDEN });
     }
 
     const accessToken = await jwt.sign(
-      { username: token.username },
+      { email: token.email },
       process.env.ACCESS_TOKEN_SECRET as string,
       { expiresIn: '30s' }
     );
@@ -99,7 +99,7 @@ export async function handleLogout(req: Request, res: Response) {
 
     // Delete the refresh token
     await User.findOneAndUpdate(
-      { username: foundUser.username },
+      { email: foundUser.email },
       { $unset: { refreshToken: 1 } }
     );
 
@@ -110,20 +110,6 @@ export async function handleLogout(req: Request, res: Response) {
     });
 
     res.sendStatus(statusCodes.NO_CONTENT);
-    // const token = <TokenData>(
-    //   await jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string)
-    // );
-
-    // if (foundUser.username !== token.username)
-    //   return sendError({ res, code: statusCodes.FORBIDDEN });
-
-    // const accessToken = await jwt.sign(
-    //   { username: token.username },
-    //   process.env.ACCESS_TOKEN_SECRET as string,
-    //   { expiresIn: '30s' }
-    // );
-
-    // sendResponse(res, { accessToken });
   } catch (refreshTokenError) {
     sendError({ res, error: refreshTokenError, code: 500 });
   }

@@ -1,5 +1,5 @@
 export const userData = {
-  username: 'testuser',
+  email: 'charbel@sako.com',
   password: 'hashedPassword',
   refreshToken: null,
 };
