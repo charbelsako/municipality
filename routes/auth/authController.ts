@@ -20,12 +20,11 @@ export async function handleLogin(req: Request, res: Response) {
     const foundUser: any = await User.findOne({ email });
     if (!foundUser) return sendError({ res, code: statusCodes.UNAUTHORIZED }); //Unauthorized
 
-    // evaluate password
     const match = await bcrypt.compare(password, foundUser.password);
     if (!match) {
       return sendError({ res, code: statusCodes.UNAUTHORIZED });
     }
-    // create JWTs
+
     const accessToken = jwt.sign(
       { email },
       process.env.ACCESS_TOKEN_SECRET as string,
@@ -38,7 +37,6 @@ export async function handleLogin(req: Request, res: Response) {
       { expiresIn: '1d' }
     );
 
-    // ! TODO save refresh token
     foundUser.refreshToken = refreshToken;
     await foundUser.save();
 

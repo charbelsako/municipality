@@ -75,7 +75,6 @@ const SEXES = { MALE: 'ذكر', FEMALE: 'أنثى' };
 
 const userSchema = new Schema(
   {
-    username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     sex: { type: String, enum: Object.values(SEXES) },
     name: {
