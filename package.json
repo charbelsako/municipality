@@ -4,8 +4,9 @@
   "description": "ERP for municipalities",
   "main": "server.ts",
   "scripts": {
+    "start:server": "pm2 start server.ts --interpreter /c/Users/user/AppData/Roaming/npm/ts-node",
     "start:dev": "cross-env NODE_ENV=development nodemon server.ts",
-    "start:prod": "cross-env NODE_ENV=production ts-node server.ts",
+    "start:prod": "ts-node server.ts",
     "test": "cross-env NODE_ENV=test jest"
   },
   "keywords": [],
