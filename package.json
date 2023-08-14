@@ -27,6 +27,7 @@
     "mongoose": "^7.4.2",
     "mongoose-id-validator2": "^0.0.2",
     "mongoose-paginate-v2": "^1.7.31",
+    "mongoose-plugin-autoinc": "^1.1.9",
     "ts-jest": "^29.1.1",
     "validator": "^13.11.0"
   },
