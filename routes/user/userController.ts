@@ -114,14 +114,14 @@ export async function handleCreateCitizen(req: Request, res: Response) {
   }
 }
 
-export async function handleAddUserRole(req: Request, res: Response) {
+export async function handleChangeUserRole(req: Request, res: Response) {
   try {
     const permission = ac.can(req.user.role).updateAny('user');
     if (!permission.granted) throw new Error('can not access resource');
 
     const { id, role } = req.body;
 
-    const user = await User.findByIdAndUpdate(id, { roles: { $push: role } });
+    const user = await User.findByIdAndUpdate(id, { role });
     sendResponse(res, user);
   } catch (handleAddUserRoleError) {
     sendError({
