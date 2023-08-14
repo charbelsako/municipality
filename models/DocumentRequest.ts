@@ -1,4 +1,4 @@
-import { Document, Schema, SchemaType, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { autoIncrement } from 'mongoose-plugin-autoinc';
 
 const DOCUMENT_TYPES = {
