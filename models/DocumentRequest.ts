@@ -4,6 +4,11 @@ import { autoIncrement } from 'mongoose-plugin-autoinc';
 const DOCUMENT_TYPES = {
   Statement: 'افاده',
   LEASE_REGISTRATION: 'تسجيل عقد إيجار',
+  RENTAL_FEES_DISABLED_EXEMPTION: 'طلب إعفاء معوق من رسوم التأجيرية ',
+  MUNICIPAL_FEES_INSTALLMENT: 'تقسيط رسوم بلدية',
+  MUNICIPAL_CLEARANCE: 'طلب براءة ذمة بلدية ',
+  BUILDING_PERMIT: 'طلب ترخيص بالبناء ',
+  BUILDING_PERMIT_RENEWAL: 'طلب تجديد ترخيص بالبناء ',
   // etc.
 };
 

@@ -1,9 +1,8 @@
 import { Request, Response } from 'express';
-import User, { ROLES } from '../../models/User';
+import User from '../../models/User';
 import { sendError, sendResponse } from '../../responseHandler';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { validateSignUp } from '../../validators/signUpValidations';
 import { cookieOptions, statusCodes } from '../../constants';
 import { TokenData } from '../../middleware/verifyJWT';
 
