@@ -34,7 +34,7 @@ router.get('/refresh', handleRefreshToken);
 router.get('/logout', handleLogout);
 
 /**
- * just for testing that protection works with roles
+ * just for testing that protection works with role
  */
 router.use(verifyJWT);
 router.get('/protected', (req: Request, res: Response) => {

@@ -33,7 +33,7 @@ export async function handleCreateAdmin(req: Request, res: Response) {
       personalInfo: { sect: personalSect },
       sex,
       recordInfo: { number: recordNumber, sect: recordSect },
-      role: ROLES.ADMIN,
+      role: [ROLES.ADMIN],
     };
 
     const validationError = validateSignUp(data);
@@ -89,7 +89,7 @@ export async function handleCreateCitizen(req: Request, res: Response) {
       personalInfo: { sect: personalSect },
       sex,
       recordInfo: { number: recordNumber, sect: recordSect },
-      role: ROLES.CITIZEN,
+      role: [ROLES.CITIZEN],
     };
 
     const validationError = validateCreateCitizen(data);
@@ -137,6 +137,24 @@ export async function handleUpdatePassword(req: Request, res: Response) {
     sendError({
       res,
       error: handleUpdatePasswordError,
+      code: statusCodes.SERVER_ERROR,
+    });
+  }
+}
+
+export async function handleChangeUserRole(req: Request, res: Response) {
+  try {
+    const permission = ac.can(req.user.role).updateAny('user');
+    if (!permission.granted) throw new Error('can not access resource');
+
+    const { id, role } = req.body;
+
+    const user = await User.findByIdAndUpdate(id, { role });
+    sendResponse(res, user);
+  } catch (handleAddUserRoleError) {
+    sendError({
+      res,
+      error: handleAddUserRoleError,
       code: statusCodes.SERVER_ERROR,
     });
   }

@@ -13,6 +13,7 @@ declare module 'express-serve-static-core' {
 export interface TokenData {
   email: string;
   role: string;
+  _id: string;
 }
 
 export async function verifyJWT(
