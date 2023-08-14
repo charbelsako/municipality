@@ -26,13 +26,13 @@ export async function handleLogin(req: Request, res: Response) {
     }
 
     const accessToken = jwt.sign(
-      { email },
+      { email, role: foundUser.role },
       process.env.ACCESS_TOKEN_SECRET as string,
       { expiresIn: '30s' }
     );
 
     const refreshToken = jwt.sign(
-      { email },
+      { email, role: foundUser.role },
       process.env.REFRESH_TOKEN_SECRET as string,
       { expiresIn: '1d' }
     );
@@ -71,7 +71,7 @@ export async function handleRefreshToken(req: Request, res: Response) {
     }
 
     const accessToken = await jwt.sign(
-      { email: token.email },
+      { email: token.email, role: token.role },
       process.env.ACCESS_TOKEN_SECRET as string,
       { expiresIn: '30s' }
     );

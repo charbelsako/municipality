@@ -47,7 +47,7 @@ export interface IUser {
   name: IName;
   phoneNumberList: [string];
   email: string;
-  role: string;
+  role: string[];
   refreshToken?: string;
   personalInfo: IPersonalInfo;
   sex: string;
@@ -93,7 +93,7 @@ const userSchema = new Schema(
     },
     phoneNumberList: [String],
     email: String,
-    role: { type: String, enum: Object.values(ROLES) },
+    roles: { type: [String], enum: Object.values(ROLES) },
     refreshToken: { type: String },
   },
   {
