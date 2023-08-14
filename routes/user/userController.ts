@@ -5,9 +5,12 @@ import { sendError, sendResponse } from '../../responseHandler';
 import User, { ROLES } from '../../models/User';
 import { validateCreateCitizen } from '../../validators/createCitizenValidator';
 import { statusCodes } from '../../constants';
+import ac from '../../accesscontrol/setup';
 
 export async function handleCreateAdmin(req: Request, res: Response) {
   try {
+    const permission = ac.can(req.user.role).createAny('any');
+    if (!permission.granted) throw new Error('Cannot access this route');
     const {
       password,
       phoneNumbers,
@@ -62,6 +65,9 @@ export async function handleCreateAdmin(req: Request, res: Response) {
 
 export async function handleCreateCitizen(req: Request, res: Response) {
   try {
+    const permission = ac.can(req.user.role).createAny('citizen');
+    if (!permission.granted) throw new Error('Cannot access this route');
+
     const {
       password,
       phoneNumbers,
@@ -108,6 +114,29 @@ export async function handleCreateCitizen(req: Request, res: Response) {
     sendError({
       res,
       error: handleCreateCitizenErr,
+      code: statusCodes.SERVER_ERROR,
+    });
+  }
+}
+
+export async function handleUpdatePassword(req: Request, res: Response) {
+  try {
+    const { newPassword } = req.body;
+    // encrypt the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    await User.findOneAndUpdate(
+      { email: req.user.email },
+      { password: hashedPassword },
+      { new: true }
+    );
+
+    sendResponse(res, {});
+  } catch (handleUpdatePasswordError) {
+    sendError({
+      res,
+      error: handleUpdatePasswordError,
       code: statusCodes.SERVER_ERROR,
     });
   }
