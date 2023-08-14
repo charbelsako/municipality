@@ -1,6 +1,10 @@
 import express from 'express';
 import { verifyJWT } from '../../middleware/verifyJWT';
-import { handleCreateAdmin, handleCreateCitizen } from './userController';
+import {
+  handleChangeUserRole,
+  handleCreateAdmin,
+  handleCreateCitizen,
+} from './userController';
 
 const router = express.Router();
 
@@ -19,5 +23,13 @@ router.post('/create-admin', verifyJWT, handleCreateAdmin);
  * @method POST
  */
 router.post('/create-citizen', handleCreateCitizen);
+
+/**
+ * @route /api/v1/user/change-role
+ * @desc changes a role of any user
+ * @access Super Admins only
+ * @method POST
+ */
+router.post('/change-role', verifyJWT, handleChangeUserRole);
 
 export default router;
