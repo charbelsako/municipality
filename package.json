@@ -16,6 +16,7 @@
     "@types/jest": "^29.5.3",
     "@types/supertest": "^2.0.12",
     "@types/validator": "^13.9.0",
+    "accesscontrol": "^2.2.1",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",

@@ -5,6 +5,7 @@ import {
   handleLogout,
   handleRefreshToken,
 } from './authController';
+import ac from '../../accesscontrol/setup';
 
 const router = express.Router();
 
@@ -33,10 +34,14 @@ router.get('/refresh', handleRefreshToken);
 router.get('/logout', handleLogout);
 
 /**
- * just for testing that protection works
+ * just for testing that protection works with roles
  */
 router.use(verifyJWT);
 router.get('/protected', (req: Request, res: Response) => {
+  const permission = ac.can(req.user.role).createOwn('admin');
+  if (!permission.granted) {
+    return res.send('You do not have permission to access this resource');
+  }
   res.send('working');
 });
 

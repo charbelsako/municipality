@@ -2,15 +2,17 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { sendStatus } from '../responseHandler';
 import { statusCodes } from '../constants';
+import { User } from '../types';
 
 declare module 'express-serve-static-core' {
   interface Request {
-    user: string;
+    user: User;
   }
 }
 
 export interface TokenData {
   email: string;
+  role: string;
 }
 
 export async function verifyJWT(
@@ -28,7 +30,7 @@ export async function verifyJWT(
       token,
       process.env.ACCESS_TOKEN_SECRET as string
     );
-    req.user = (<TokenData>decoded).email;
+    req.user = <TokenData>decoded;
     next();
   } catch (verifyJWTError) {
     sendStatus(res, statusCodes.FORBIDDEN);
