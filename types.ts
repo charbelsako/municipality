@@ -1,1 +1,1 @@
-export type User = { email: string; role: string };
+export type User = { _id: string; email: string; role: string };

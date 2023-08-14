@@ -1,9 +1,8 @@
 import { Request, Response } from 'express';
-import User, { ROLES } from '../../models/User';
+import User from '../../models/User';
 import { sendError, sendResponse } from '../../responseHandler';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { validateSignUp } from '../../validators/signUpValidations';
 import { cookieOptions, statusCodes } from '../../constants';
 import { TokenData } from '../../middleware/verifyJWT';
 
@@ -26,13 +25,13 @@ export async function handleLogin(req: Request, res: Response) {
     }
 
     const accessToken = jwt.sign(
-      { email, role: foundUser.role },
+      { email, role: foundUser.role, _id: foundUser._id },
       process.env.ACCESS_TOKEN_SECRET as string,
       { expiresIn: '30s' }
     );
 
     const refreshToken = jwt.sign(
-      { email, role: foundUser.role },
+      { email, role: foundUser.role, _id: foundUser._id },
       process.env.REFRESH_TOKEN_SECRET as string,
       { expiresIn: '1d' }
     );
@@ -71,7 +70,7 @@ export async function handleRefreshToken(req: Request, res: Response) {
     }
 
     const accessToken = await jwt.sign(
-      { email: token.email, role: token.role },
+      { email: token.email, role: token.role, _id: token._id },
       process.env.ACCESS_TOKEN_SECRET as string,
       { expiresIn: '30s' }
     );
