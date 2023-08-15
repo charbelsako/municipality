@@ -6,14 +6,22 @@ const ac = new AccessControl();
 ac.grant(ROLES.CITIZEN)
   .createOwn('document')
   .deleteOwn('document')
+  .updateOwn('document')
+  .readOwn('document')
+  .updateOwn('citizen')
   .createAny('payment');
 
 ac.grant(ROLES.ADMIN)
   .extend(ROLES.CITIZEN)
   .updateAny('document')
   .readAny('document')
-  .createAny('citizen');
+  .createAny('citizen')
+  .updateAny('citizen')
+  .readAny('citizen');
 
-ac.grant(ROLES.SUPER_ADMIN).createAny('admin').updateAny('user');
+ac.grant(ROLES.SUPER_ADMIN)
+  .extend(ROLES.ADMIN)
+  .createAny('admin')
+  .updateAny('citizen');
 
 export default ac;

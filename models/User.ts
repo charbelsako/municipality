@@ -93,7 +93,7 @@ const userSchema = new Schema(
     },
     phoneNumberList: [String],
     email: String,
-    roles: { type: [String], enum: Object.values(ROLES) },
+    role: { type: String, enum: Object.values(ROLES) },
     refreshToken: { type: String },
   },
   {

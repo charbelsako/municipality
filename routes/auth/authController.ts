@@ -45,7 +45,7 @@ export async function handleLogin(req: Request, res: Response) {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    sendResponse(res, { accessToken });
+    sendResponse(res, { accessToken, role: foundUser.role });
   } catch (loginError) {
     sendError({ res, error: loginError, code: 500 });
   }

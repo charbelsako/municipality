@@ -1,15 +1,44 @@
 import { Schema, model } from 'mongoose';
 import { autoIncrement } from 'mongoose-plugin-autoinc';
 
-const DOCUMENT_TYPES = {
-  Statement: 'افاده',
+enum DocumentTypes {
+  STATEMENT = 'افاده',
+  LEASE_REGISTRATION = 'تسجيل عقد إيجار',
+  RENTAL_FEES_DISABLED_EXEMPTION = 'طلب إعفاء معوق من رسوم التأجيرية',
+  MUNICIPAL_FEES_INSTALLMENT = 'تقسيط رسوم بلدية',
+  MUNICIPAL_CLEARANCE = 'طلب براءة ذمة بلدية ',
+  BUILDING_PERMIT = 'طلب ترخيص بالبناء ',
+  BUILDING_PERMIT_RENEWAL = 'طلب تجديد ترخيص بالبناء ',
+}
+
+type IDocumentRequest = {
+  type: DocumentTypes;
+  callee: string; // المستدعي
+  address: string;
+  phoneNumber: string;
+  propertyNo: string; // عقار رقم
+  sectionNo: string;
+  realEstateArea: string; // منطقة عقارية
+  requestFor: string;
+  attachedDocuments: number[]; // ! not sure how this will be handled
+  notes: string;
+  status: string;
+};
+
+export const DOCUMENT_TYPES = {
+  STATEMENT: 'افاده',
   LEASE_REGISTRATION: 'تسجيل عقد إيجار',
-  RENTAL_FEES_DISABLED_EXEMPTION: 'طلب إعفاء معوق من رسوم التأجيرية ',
+  RENTAL_FEES_DISABLED_EXEMPTION: 'طلب إعفاء معوق من رسوم التأجيرية',
   MUNICIPAL_FEES_INSTALLMENT: 'تقسيط رسوم بلدية',
   MUNICIPAL_CLEARANCE: 'طلب براءة ذمة بلدية ',
   BUILDING_PERMIT: 'طلب ترخيص بالبناء ',
   BUILDING_PERMIT_RENEWAL: 'طلب تجديد ترخيص بالبناء ',
   // etc.
+};
+
+export const DocumentStatus = {
+  DONE: 'Done',
+  PENDING: 'Pending',
 };
 
 const DocumentRequestSchema = new Schema(
@@ -19,11 +48,16 @@ const DocumentRequestSchema = new Schema(
     address: { type: String },
     phoneNumber: { type: String },
     propertyNo: { type: String }, // عقار رقم
-    sectionNo: { type: String },
+    sectionNo: { type: String }, // رقم القسم
     realEstateArea: { type: String }, // منطقة عقارية
     requestFor: { type: String },
     attachedDocuments: { type: [Number], ref: 'documentRequest' }, // ! not sure how this will be handled
     notes: { type: String },
+    status: {
+      type: String,
+      enum: Object.values(DocumentStatus),
+      default: DocumentStatus.PENDING,
+    },
   },
   { timestamps: true }
 );
@@ -34,4 +68,7 @@ DocumentRequestSchema.plugin(autoIncrement, {
   startAt: 100000,
 });
 
-export const DocumentRequest = model('documentRequest', DocumentRequestSchema);
+export const DocumentRequest = model<IDocumentRequest>(
+  'documentRequest',
+  DocumentRequestSchema
+);

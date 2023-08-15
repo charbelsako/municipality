@@ -9,6 +9,7 @@ import corsOptions from './config/corsOptions';
 // routes
 import authRouter from './routes/auth/authRouter';
 import userRouter from './routes/user/userRouter';
+import documentRouter from './routes/documentRequest/documentRequestRouter';
 import credentials from './middleware/credentials';
 
 const app = express();
@@ -21,6 +22,7 @@ app.use(cookieParser());
 // routes
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/user', userRouter);
+app.use('/api/v1/documents', documentRouter);
 app.get('/', (req, res) => res.send('working'));
 
 // connect to database
