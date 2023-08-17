@@ -41,6 +41,7 @@ export async function handleLogin(req: Request, res: Response) {
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
+      secure: true,
       sameSite: 'none',
       maxAge: 24 * 60 * 60 * 1000,
     });
@@ -75,7 +76,11 @@ export async function handleRefreshToken(req: Request, res: Response) {
       { expiresIn: '30s' }
     );
 
-    sendResponse(res, { accessToken });
+    sendResponse(res, {
+      accessToken,
+      role: foundUser.role,
+      email: token.email,
+    });
   } catch (refreshTokenError) {
     sendError({ res, error: refreshTokenError, code: 500 });
   }
