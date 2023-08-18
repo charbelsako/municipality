@@ -21,9 +21,9 @@ export async function verifyJWT(
   res: Response,
   next: NextFunction
 ) {
-  if (process.env.NODE_ENV === 'test') next();
   try {
     const authHeader = req.headers['authorization'];
+    console.log(authHeader);
     if (!authHeader) return res.sendStatus(401);
 
     const token: string = authHeader.split(' ')[1];

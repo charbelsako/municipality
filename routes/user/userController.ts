@@ -173,6 +173,7 @@ export async function handleUpdateUser(req: Request, res: Response) {
     // Update the user if exists
     const user = await User.findByIdAndUpdate(req.user._id, params, {
       new: true,
+      fields: { password: 0, refreshToken: 0 },
     });
 
     if (!user) throw new Error('User not found');
@@ -189,8 +190,10 @@ export async function handleUpdateUser(req: Request, res: Response) {
 
 export async function getUserProfile(req: Request, res: Response) {
   try {
-    const userProfile = await User.findById(req.user._id);
-
+    const userProfile = await User.findById(req.user._id).select({
+      password: 0,
+      refreshToken: 0,
+    });
     if (!userProfile) throw new Error('user not found');
 
     sendResponse(res, userProfile);

@@ -13,7 +13,6 @@ export function validateCreateCitizen(data: IUser) {
     errors.email = 'Email is empty';
   }
   if (!validator.isStrongPassword(data.password)) {
-    console.log('what');
     errors.password =
       'Password must include, 8 characters, 1 number, 1 uppercase, 1 symbol';
   }
