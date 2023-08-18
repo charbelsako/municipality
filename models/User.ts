@@ -95,6 +95,12 @@ const userSchema = new Schema(
     email: String,
     role: { type: String, enum: Object.values(ROLES) },
     refreshToken: { type: String },
+    address: {
+      street: String,
+      area: String,
+      building: String,
+      floor: String,
+    },
   },
   {
     timestamps: true,

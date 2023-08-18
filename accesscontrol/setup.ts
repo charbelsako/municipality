@@ -16,7 +16,7 @@ ac.grant(ROLES.ADMIN)
   .updateAny('document')
   .readAny('document')
   .createAny('citizen')
-  .updateAny('citizen')
+  // .updateAny('citizen')
   .readAny('citizen');
 
 ac.grant(ROLES.SUPER_ADMIN)
