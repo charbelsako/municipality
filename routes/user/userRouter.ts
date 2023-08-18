@@ -5,6 +5,8 @@ import {
   handleChangeUserRole,
   handleCreateAdmin,
   handleCreateCitizen,
+  handleUpdateUser,
+  getUserProfile,
 } from './userController';
 
 const router = express.Router();
@@ -34,9 +36,27 @@ router.post('/create-citizen', verifyJWT, handleCreateCitizen);
 router.post('/update-password', verifyJWT, handleUpdatePassword);
 
 /**
+ * @route /api/v1/user/update-user
+ * @desc update the user without touching password and role
+ * @access All signed in users
+ * @method POST
+ * @params id is in the request from verifyJWT
+ */
+router.post('/update-user', verifyJWT, handleUpdateUser);
+
+/**
+ * @route /api/v1/user/profile
+ * @desc Fetches the profile data of a user
+ * @access All signed in users
+ * @method POST
+ * @params id is in the request from verifyJWT
+ */
+router.get('/profile', verifyJWT, getUserProfile);
+
+/**
  * @route /api/v1/user/change-role
  * @desc changes a role of any user
- * @access Super Admins only
+ * @access SuperAdmins only
  * @method POST
  */
 router.post('/change-role', verifyJWT, handleChangeUserRole);

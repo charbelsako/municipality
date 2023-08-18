@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { verifyJWT } from '../../middleware/verifyJWT';
 import {
+  getAllRequests,
   handleAddStatementDocument,
   handleDocumentMarkAsDone,
   handleViewStatementDocuments,
@@ -37,5 +38,13 @@ router.patch(
   verifyJWT,
   handleDocumentMarkAsDone
 );
+
+/**
+ * @route /api/v1/documents/my
+ * @desc Retrieves all documents for the current user
+ * @access private Signed in users
+ * @method GET
+ */
+router.get('/my', verifyJWT, getAllRequests);
 
 export default router;

@@ -92,3 +92,17 @@ export async function handleDocumentMarkAsDone(req: Request, res: Response) {
     sendError({ res, error: err, code: statusCodes.SERVER_ERROR });
   }
 }
+
+export async function getAllRequests(req: Request, res: Response) {
+  try {
+    const requests = await DocumentRequest.find({ callee: req.user._id });
+
+    sendResponse(res, requests);
+  } catch (err) {
+    sendError({
+      res,
+      error: err,
+      code: statusCodes.SERVER_ERROR,
+    });
+  }
+}

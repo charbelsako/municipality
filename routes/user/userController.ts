@@ -6,6 +6,7 @@ import User, { ROLES } from '../../models/User';
 import { validateCreateCitizen } from '../../validators/createCitizenValidator';
 import { statusCodes } from '../../constants';
 import ac from '../../accesscontrol/setup';
+import { DocumentRequest } from '../../models/DocumentRequest';
 
 export async function handleCreateAdmin(req: Request, res: Response) {
   try {
@@ -127,12 +128,12 @@ export async function handleUpdatePassword(req: Request, res: Response) {
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
     await User.findOneAndUpdate(
-      { email: req.user.email },
+      { _id: req.user._id },
       { password: hashedPassword },
       { new: true }
     );
 
-    sendResponse(res, {});
+    sendResponse(res, { message: 'Successfully changed password' });
   } catch (handleUpdatePasswordError) {
     sendError({
       res,
@@ -144,7 +145,7 @@ export async function handleUpdatePassword(req: Request, res: Response) {
 
 export async function handleChangeUserRole(req: Request, res: Response) {
   try {
-    const permission = ac.can(req.user.role).updateAny('user');
+    const permission = ac.can(req.user.role).updateAny('citizen');
     if (!permission.granted) throw new Error('can not access resource');
 
     const { id, role } = req.body;
@@ -155,6 +156,48 @@ export async function handleChangeUserRole(req: Request, res: Response) {
     sendError({
       res,
       error: handleAddUserRoleError,
+      code: statusCodes.SERVER_ERROR,
+    });
+  }
+}
+
+export async function handleUpdateUser(req: Request, res: Response) {
+  try {
+    const params = req.body;
+
+    // don't allow updating password and role through here
+    delete params.password;
+    delete params.role;
+    delete params.refreshToken;
+
+    // Update the user if exists
+    const user = await User.findByIdAndUpdate(req.user._id, params, {
+      new: true,
+    });
+
+    if (!user) throw new Error('User not found');
+
+    sendResponse(res, user);
+  } catch (err) {
+    sendError({
+      res,
+      error: err,
+      code: statusCodes.SERVER_ERROR,
+    });
+  }
+}
+
+export async function getUserProfile(req: Request, res: Response) {
+  try {
+    const userProfile = await User.findById(req.user._id);
+
+    if (!userProfile) throw new Error('user not found');
+
+    sendResponse(res, userProfile);
+  } catch (err) {
+    sendError({
+      res,
+      error: err,
       code: statusCodes.SERVER_ERROR,
     });
   }
