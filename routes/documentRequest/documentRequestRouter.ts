@@ -5,6 +5,7 @@ import {
   handleAddStatementDocument,
   handleDocumentMarkAsDone,
   handleViewStatementDocuments,
+  handleDocumentMarkAsRejected,
 } from './documentRequestController';
 
 const router = express.Router();
@@ -38,6 +39,8 @@ router.patch(
   verifyJWT,
   handleDocumentMarkAsDone
 );
+
+router.patch('/:id/mark-as-rejected', verifyJWT, handleDocumentMarkAsRejected);
 
 /**
  * @route /api/v1/documents/my
