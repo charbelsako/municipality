@@ -39,6 +39,7 @@ export const DOCUMENT_TYPES = {
 export const DocumentStatus = {
   DONE: 'Done',
   PENDING: 'Pending',
+  REJECTED: 'Rejected',
 };
 
 const DocumentRequestSchema = new Schema(

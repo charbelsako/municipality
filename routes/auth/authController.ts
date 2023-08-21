@@ -27,7 +27,7 @@ export async function handleLogin(req: Request, res: Response) {
     const accessToken = jwt.sign(
       { email, role: foundUser.role, _id: foundUser._id },
       process.env.ACCESS_TOKEN_SECRET as string,
-      { expiresIn: '30s' }
+      { expiresIn: '30m' }
     );
 
     const refreshToken = jwt.sign(
