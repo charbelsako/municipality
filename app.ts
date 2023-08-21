@@ -28,19 +28,6 @@ app.get('/', (req, res) => res.send('working'));
 // connect to database
 const uri = process.env.MONGO_URI as string;
 mongoose.connect(uri);
-if (process.env.NODE_ENV !== 'test') {
-  console.log('Connect to the database');
-}
-
-// For React.js build
-// Serve static assets if in production
-if (process.env.NODE_ENV === 'production') {
-  console.log('production mode');
-  app.use(express.static('frontend/.next/'));
-  // console.log(path.resolve(__dirname, "client/", "build/", "index.html"))
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client/', 'build', 'index.html'));
-  });
-}
+console.log('Connect to the database');
 
 export default app;
