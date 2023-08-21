@@ -150,3 +150,29 @@ export async function getAllRequests(req: Request, res: Response) {
     });
   }
 }
+
+export async function getDocumentDetail(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const permission = ac.can(req.user.role).readAny('document');
+
+    let document;
+    if (permission.granted) {
+      document = await DocumentRequest.findById(id);
+    } else {
+      document = await DocumentRequest.findOne({
+        _id: id,
+        callee: req.user._id,
+      });
+    }
+    if (!document) throw new Error('Document not found');
+
+    sendResponse(res, document);
+  } catch (getDocumentDetailError) {
+    sendError({
+      res,
+      error: getDocumentDetailError,
+      code: statusCodes.SERVER_ERROR,
+    });
+  }
+}

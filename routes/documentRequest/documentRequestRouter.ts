@@ -25,7 +25,7 @@ router.post(
 /**
  * @route /api/v1/documents/view-statement-documents
  * @desc Retrieves all statement documents
- * @access private Admin
+ * @access private Admins only
  * @method GET
  */
 router.get(
@@ -34,12 +34,26 @@ router.get(
   handleViewStatementDocuments
 );
 
+/**
+ * @route /api/v1/documents/:id/mark-as-done
+ * @param id the id of the document to mark as done
+ * @desc sets a document as done
+ * @access private Admins only
+ * @method PATCH
+ */
 router.patch(
   '/statement-document/:id/mark-as-done',
   verifyJWT,
   handleDocumentMarkAsDone
 );
 
+/**
+ * @route /api/v1/documents/:id/mark-as-rejected
+ * @param id the id of the document to reject
+ * @desc sets a document as rejected
+ * @access private Admins only
+ * @method PATCH
+ */
 router.patch('/:id/mark-as-rejected', verifyJWT, handleDocumentMarkAsRejected);
 
 /**
