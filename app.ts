@@ -28,6 +28,6 @@ app.get('/', (req, res) => res.send('working'));
 // connect to database
 const uri = process.env.MONGO_URI as string;
 mongoose.connect(uri);
-console.log('Connect to the database');
+console.log('Connected to the database');
 
 export default app;
