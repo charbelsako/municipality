@@ -37,9 +37,9 @@ export const DOCUMENT_TYPES = {
 };
 
 export const DocumentStatus = {
-  DONE: 'Done',
-  PENDING: 'Pending',
-  REJECTED: 'Rejected',
+  DONE: 'منجز',
+  PENDING: 'قيد الانتظار',
+  REJECTED: 'مرفوض',
 };
 
 const DocumentRequestSchema = new Schema(
