@@ -165,7 +165,10 @@ export async function getDocumentDetail(req: Request, res: Response) {
         callee: req.user._id,
       });
     }
-    if (!document) throw new Error('Document not found');
+
+    if (!document) {
+      throw new Error('Document not found');
+    }
 
     sendResponse(res, document);
   } catch (getDocumentDetailError) {

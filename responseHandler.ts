@@ -15,7 +15,14 @@ export async function sendError({
   errorLabel,
 }: ErrorObject) {
   if (!error) return res.sendStatus(code);
-  res.status(code).send(error);
+
+  if (code === statusCodes.BAD_REQUEST && error.message) {
+    return res.status(code).send(error);
+  }
+
+  return res
+    .status(code)
+    .send({ error: error.message || 'Something went wrong' });
 }
 
 export async function sendResponse(res: Response, data: any) {

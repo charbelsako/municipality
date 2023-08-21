@@ -6,6 +6,7 @@ import {
   handleDocumentMarkAsDone,
   handleViewStatementDocuments,
   handleDocumentMarkAsRejected,
+  getDocumentDetail,
 } from './documentRequestController';
 
 const router = express.Router();
@@ -63,5 +64,13 @@ router.patch('/:id/mark-as-rejected', verifyJWT, handleDocumentMarkAsRejected);
  * @method GET
  */
 router.get('/my', verifyJWT, getAllRequests);
+
+/**
+ * @route /api/v1/documents/:id
+ * @desc Retrieves document details
+ * @access private Signed in Citizen's can view their own documents, Admins can view any
+ * @method GET
+ */
+router.get('/:id', verifyJWT, getDocumentDetail);
 
 export default router;
