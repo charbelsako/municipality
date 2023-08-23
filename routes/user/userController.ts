@@ -6,11 +6,11 @@ import User, { ROLES } from '../../models/User';
 import { validateCreateCitizen } from '../../validators/createCitizenValidator';
 import { statusCodes } from '../../constants';
 import ac from '../../accesscontrol/setup';
-import { DocumentRequest } from '../../models/DocumentRequest';
 
 export async function handleCreateAdmin(req: Request, res: Response) {
   try {
-    const permission = ac.can(req.user.role).createAny('any');
+    const permission = ac.can(req.user.role).createAny('admin');
+
     if (!permission.granted) throw new Error('Cannot access this route');
     const {
       password,

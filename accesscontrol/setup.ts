@@ -22,6 +22,7 @@ ac.grant(ROLES.ADMIN)
 ac.grant(ROLES.SUPER_ADMIN)
   .extend(ROLES.ADMIN)
   .createAny('admin')
+  .createAny('super admin')
   .updateAny('citizen');
 
 export default ac;
