@@ -28,6 +28,14 @@ router.post('/create-admin', verifyJWT, handleCreateAdmin);
 router.post('/create-citizen', verifyJWT, handleCreateCitizen);
 
 /**
+ * @route /api/v1/user/signup
+ * @desc creates a normal citizen account
+ * @access Public
+ * @method POST
+ */
+router.post('/signup', verifyJWT, handleCreateCitizen);
+
+/**
  * @route /api/v1/user/handleUpdatePassword
  * @desc update the password of a user
  * @access All signed in users

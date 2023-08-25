@@ -66,9 +66,6 @@ export async function handleCreateAdmin(req: Request, res: Response) {
 
 export async function handleCreateCitizen(req: Request, res: Response) {
   try {
-    const permission = ac.can(req.user.role).createAny('citizen');
-    if (!permission.granted) throw new Error('Cannot access this route');
-
     const {
       password,
       phoneNumbers,
@@ -90,15 +87,29 @@ export async function handleCreateCitizen(req: Request, res: Response) {
       personalInfo: { sect: personalSect },
       sex,
       recordInfo: { number: recordNumber, sect: recordSect },
-      role: [ROLES.CITIZEN],
+      role: ROLES.CITIZEN,
     };
 
-    const validationError = validateCreateCitizen(data);
+    const validationData = {
+      password,
+      phoneNumbers,
+      firstName: name?.firstName,
+      motherName: name?.motherName,
+      fatherName: name?.fatherName,
+      lastName: name?.lastName,
+      dateOfBirth,
+      sex,
+      personalSect,
+      recordSect,
+      recordNumber,
+      email,
+    };
+    const validationError = validateCreateCitizen(validationData);
 
     if (!validationError.isValid) {
       return sendError({
         res,
-        error: validationError,
+        error: validationError.errors,
         code: statusCodes.BAD_REQUEST,
       });
     }
@@ -112,6 +123,7 @@ export async function handleCreateCitizen(req: Request, res: Response) {
 
     sendResponse(res, userData);
   } catch (handleCreateCitizenErr) {
+    console.log(handleCreateCitizenErr);
     sendError({
       res,
       error: handleCreateCitizenErr,
