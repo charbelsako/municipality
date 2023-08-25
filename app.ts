@@ -1,4 +1,4 @@
-import { config } from 'dotenv-flow';
+import { config } from 'dotenv';
 config();
 import mongoose from 'mongoose';
 import express from 'express';
