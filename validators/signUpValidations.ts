@@ -1,30 +1,33 @@
-import validator from 'validator';
-import { IUser } from '../models/User';
+// ? I'm using create citizen validator file
+// import validator from 'validator';
+// import { IUser } from '../models/User';
 
-export function validateSignUp(data: IUser) {
-  let isValid: boolean = false;
-  const errors: any = {};
-  data.email = data.email || '';
-  data.password = data.password || '';
-  data.name.firstName = data.name.firstName || '';
-  data.name.lastName = data.name.lastName || '';
+// export function validateSignUp(data: IUser) {
+//   let isValid: boolean = false;
+//   const errors: any = {};
+//   data.email = data.email || '';
+//   data.password = data.password || '';
+//   data.name.firstName = data.name.firstName || '';
+//   data.name.lastName = data.name.lastName || '';
 
-  if (validator.isEmpty(data.email)) {
-    errors.email = 'Email is empty';
-  }
-  if (!validator.isStrongPassword(data.password)) {
-    errors.password =
-      'Password must include, 8 characters, 1 number, 1 uppercase, 1 symbol';
-  }
-  if (validator.isEmpty(data.name.firstName)) {
-    errors.name.firstName = 'first name is empty';
-  }
-  if (validator.isEmpty(data.name.lastName)) {
-    errors.name.lastName = 'last name is empty';
-  }
-  if (Object.keys(errors).length === 0) {
-    isValid = true;
-  }
+//   if (validator.isEmpty(data.email)) {
+//     errors.email = 'Email is empty';
+//   }
+//   if (!validator.isStrongPassword(data.password)) {
+//     errors.password =
+//       'Password must include, 8 characters, 1 number, 1 uppercase, 1 symbol';
+//   }
+//   if (validator.isEmpty(data.name.firstName)) {
+//     errors.name.firstName = 'first name is empty';
+//   }
+//   if (validator.isEmpty(data.name.lastName)) {
+//     errors.name.lastName = 'last name is empty';
+//   }
+//   // ! add validation for the new fields of address and recordInfo and personalInfo
 
-  return { errors, isValid };
-}
+//   if (Object.keys(errors).length === 0) {
+//     isValid = true;
+//   }
+
+//   return { errors, isValid };
+// }

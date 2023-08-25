@@ -158,12 +158,12 @@ export async function getDocumentDetail(req: Request, res: Response) {
 
     let document;
     if (permission.granted) {
-      document = await DocumentRequest.findById(id);
+      document = await DocumentRequest.findById(id).populate('callee', 'name');
     } else {
       document = await DocumentRequest.findOne({
         _id: id,
         callee: req.user._id,
-      });
+      }).populate('callee', 'name');
     }
 
     if (!document) {
