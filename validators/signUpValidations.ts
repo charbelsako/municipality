@@ -1,33 +1,54 @@
-// ? I'm using create citizen validator file
-// import validator from 'validator';
-// import { IUser } from '../models/User';
+import validator from 'validator';
+import { IUser } from '../models/User';
 
-// export function validateSignUp(data: IUser) {
-//   let isValid: boolean = false;
-//   const errors: any = {};
-//   data.email = data.email || '';
-//   data.password = data.password || '';
-//   data.name.firstName = data.name.firstName || '';
-//   data.name.lastName = data.name.lastName || '';
+export function validateSignUp(data: any) {
+  let isValid: boolean = false;
+  const errors: any = {};
+  data.email = data?.email || '';
+  data.password = data?.password || '';
+  data.firstName = data?.firstName || '';
+  data.lastName = data?.lastName || '';
+  data.motherName = data?.motherName || '';
+  data.dateOfBirth = data?.dateOfBirth || '';
+  data.recordNumber = data?.recordNumber || '';
+  data.recordSect = data?.recordSect || '';
+  data.personalSect = data?.personalSect || '';
 
-//   if (validator.isEmpty(data.email)) {
-//     errors.email = 'Email is empty';
-//   }
-//   if (!validator.isStrongPassword(data.password)) {
-//     errors.password =
-//       'Password must include, 8 characters, 1 number, 1 uppercase, 1 symbol';
-//   }
-//   if (validator.isEmpty(data.name.firstName)) {
-//     errors.name.firstName = 'first name is empty';
-//   }
-//   if (validator.isEmpty(data.name.lastName)) {
-//     errors.name.lastName = 'last name is empty';
-//   }
-//   // ! add validation for the new fields of address and recordInfo and personalInfo
+  if (validator.isEmpty(data.email)) {
+    errors.email = 'Email is empty';
+  }
+  if (!validator.isStrongPassword(data.password)) {
+    errors.password =
+      'Password must include, 8 characters, 1 number, 1 uppercase, 1 symbol';
+  }
+  if (validator.isEmpty(data.firstName)) {
+    errors.firstName = 'first name is empty';
+  }
+  if (validator.isEmpty(data.lastName)) {
+    errors.lastName = 'last name is empty';
+  }
+  if (validator.isEmpty(data.motherName)) {
+    errors.motherName = 'mother name is empty';
+  }
+  if (validator.isEmpty(data.dateOfBirth)) {
+    errors.dateOfBirth = 'date of birth is empty';
+  }
+  if (validator.isEmpty(data.recordNumber)) {
+    errors.recordNumber = 'record number is empty';
+  }
+  if (validator.isEmpty(data.recordSect)) {
+    errors.recordSect = 'record sect is empty';
+  }
+  if (validator.isEmpty(data.personalSect)) {
+    errors.personalSect = 'personal Sect is empty';
+  }
+  if (validator.isEmpty(data.sex)) {
+    errors.sex = 'Sex is empty';
+  }
 
-//   if (Object.keys(errors).length === 0) {
-//     isValid = true;
-//   }
+  if (Object.keys(errors).length === 0) {
+    isValid = true;
+  }
 
-//   return { errors, isValid };
-// }
+  return { errors, isValid };
+}

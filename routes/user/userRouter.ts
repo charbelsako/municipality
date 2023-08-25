@@ -33,7 +33,7 @@ router.post('/create-citizen', verifyJWT, handleCreateCitizen);
  * @access Public
  * @method POST
  */
-router.post('/signup', verifyJWT, handleCreateCitizen);
+router.post('/signup', handleCreateCitizen);
 
 /**
  * @route /api/v1/user/handleUpdatePassword

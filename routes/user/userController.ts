@@ -16,7 +16,6 @@ export async function handleCreateAdmin(req: Request, res: Response) {
       password,
       phoneNumbers,
       name,
-      role,
       dateOfBirth,
       sex,
       personalSect,
@@ -34,7 +33,7 @@ export async function handleCreateAdmin(req: Request, res: Response) {
       personalInfo: { sect: personalSect },
       sex,
       recordInfo: { number: recordNumber, sect: recordSect },
-      role: [ROLES.ADMIN],
+      role: ROLES.ADMIN,
     };
 
     const validationError = validateSignUp(data);

@@ -59,6 +59,8 @@ const DocumentRequestSchema = new Schema(
       enum: Object.values(DocumentStatus),
       default: DocumentStatus.PENDING,
     },
+    idNumber: String,
+    submittedAt: Date,
   },
   { timestamps: true }
 );
