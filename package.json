@@ -30,7 +30,9 @@
     "mongoose-paginate-v2": "^1.7.31",
     "mongoose-plugin-autoinc": "^1.1.9",
     "ts-jest": "^29.1.1",
-    "validator": "^13.11.0"
+    "validator": "^13.11.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -42,9 +44,6 @@
     "@types/mongoose-id-validator": "^0.6.3",
     "@types/node": "^20.4.7",
     "jest": "^29.6.2",
-    "nodemon": "^3.0.1",
-    "supertest": "^6.3.3",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.1.6"
+    "nodemon": "^3.0.1"
   }
 }
