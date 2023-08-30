@@ -49,6 +49,9 @@ export async function handleCreateAdmin(req: Request, res: Response) {
       });
     }
 
+    const userEmail = await User.findOne({ email });
+    if (userEmail) throw new Error('Email already registered');
+
     // encrypt the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -115,6 +118,9 @@ export async function handleCreateCitizen(req: Request, res: Response) {
         code: statusCodes.BAD_REQUEST,
       });
     }
+
+    const userEmail = await User.findOne({ email });
+    if (userEmail) throw new Error('Email already registered');
 
     // encrypt the password
     const salt = await bcrypt.genSalt(10);
