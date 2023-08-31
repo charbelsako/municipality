@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
+import { randomBytes } from 'crypto';
 import { validateSignUp } from '../../validators/signUpValidations';
 import { sendError, sendResponse } from '../../responseHandler';
-import User, { ROLES } from '../../models/User';
+import User, { IUser, ROLES } from '../../models/User';
 import { validateCreateCitizen } from '../../validators/createCitizenValidator';
 import { statusCodes } from '../../constants';
 import ac from '../../accesscontrol/setup';
@@ -61,6 +62,9 @@ export async function handleCreateAdmin(req: Request, res: Response) {
         code: statusCodes.BAD_REQUEST,
       });
     }
+
+    const userEmail = await User.findOne({ email });
+    if (userEmail) throw new Error('Email already registered');
 
     // encrypt the password
     const salt = await bcrypt.genSalt(10);
@@ -127,6 +131,9 @@ export async function handleCreateCitizen(req: Request, res: Response) {
         code: statusCodes.BAD_REQUEST,
       });
     }
+
+    const userEmail = await User.findOne({ email });
+    if (userEmail) throw new Error('Email already registered');
 
     // encrypt the password
     const salt = await bcrypt.genSalt(10);
@@ -238,7 +245,9 @@ export async function handleChangeUserRole(req: Request, res: Response) {
 
     const { id, role } = req.body;
 
-    const user = await User.findByIdAndUpdate(id, { role });
+    const user = await User.findByIdAndUpdate(id, { role }, { new: true });
+    if (!user) throw new Error('user not found');
+
     sendResponse(res, user);
   } catch (handleAddUserRoleError) {
     sendError({
