@@ -7,6 +7,8 @@ import {
   handleCreateCitizen,
   handleUpdateUser,
   getUserProfile,
+  handleResetPasswordRequest,
+  handleResetPassword,
 } from './userController';
 
 const router = express.Router();
@@ -36,7 +38,7 @@ router.post('/create-citizen', verifyJWT, handleCreateCitizen);
 router.post('/signup', handleCreateCitizen);
 
 /**
- * @route /api/v1/user/handleUpdatePassword
+ * @route /api/v1/user/update-password
  * @desc update the password of a user
  * @access All signed in users
  * @method POST
@@ -68,5 +70,21 @@ router.get('/profile', verifyJWT, getUserProfile);
  * @method POST
  */
 router.post('/change-role', verifyJWT, handleChangeUserRole);
+
+/**
+ * @route /api/v1/user/reset-password-request
+ * @desc Submits a request to reset a user's own password
+ * @access Public
+ * @method POST
+ */
+router.post('/reset-password', handleResetPasswordRequest);
+
+/**
+ * @route /api/v1/user/reset-password
+ * @desc Validates token and resets a user's own password
+ * @access Public
+ * @method POST
+ */
+router.post('/reset-password', handleResetPassword);
 
 export default router;
