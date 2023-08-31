@@ -6,6 +6,8 @@ import User, { ROLES } from '../../models/User';
 import { validateCreateCitizen } from '../../validators/createCitizenValidator';
 import { statusCodes } from '../../constants';
 import ac from '../../accesscontrol/setup';
+import Token from '../../models/Token';
+// import { sendEmail } from '../../utils/sendEmail';
 
 export async function handleCreateAdmin(req: Request, res: Response) {
   try {
@@ -36,7 +38,21 @@ export async function handleCreateAdmin(req: Request, res: Response) {
       role: ROLES.ADMIN,
     };
 
-    const validationError = validateSignUp(data);
+    const validationData = {
+      password,
+      phoneNumbers,
+      firstName: name?.firstName,
+      motherName: name?.motherName,
+      fatherName: name?.fatherName,
+      lastName: name?.lastName,
+      dateOfBirth,
+      sex,
+      personalSect,
+      recordSect,
+      recordNumber,
+      email,
+    };
+    const validationError = validateCreateCitizen(validationData);
 
     if (!validationError.isValid) {
       return sendError({
@@ -54,7 +70,6 @@ export async function handleCreateAdmin(req: Request, res: Response) {
       ...data,
       password: hashedPassword,
     });
-
     await userData.save();
 
     sendResponse(res, userData);
@@ -133,7 +148,17 @@ export async function handleCreateCitizen(req: Request, res: Response) {
 
 export async function handleUpdatePassword(req: Request, res: Response) {
   try {
-    const { newPassword } = req.body;
+    const { oldPassword, newPassword } = req.body;
+    if (!oldPassword || !newPassword) {
+      return res.status(400).send('Invalid arguments');
+    }
+    // check if oldPassword matches
+    const user = await User.findOne({ _id: req.user._id });
+    if (!user) throw new Error('user not found');
+
+    const match = await bcrypt.compare(oldPassword, user.password);
+    if (!match) throw new Error('current password is wrong');
+
     // encrypt the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
@@ -151,6 +176,58 @@ export async function handleUpdatePassword(req: Request, res: Response) {
       error: handleUpdatePasswordError,
       code: statusCodes.SERVER_ERROR,
     });
+  }
+}
+
+export async function handleResetPasswordRequest(req: Request, res: Response) {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) throw new Error('User not in system');
+
+    const token = await Token.findOne({ user: user._id });
+    if (token) await Token.findByIdAndRemove(token._id);
+
+    let resetToken = randomBytes(32).toString('hex');
+    const salt = await bcrypt.genSalt(10);
+    let hashedToken = await bcrypt.hash(resetToken, salt);
+
+    let newToken = new Token({
+      user: user._id,
+      token: hashedToken,
+      createdAt: Date.now(),
+    });
+    await newToken.save();
+
+    const link = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}&id=${user._id}`;
+
+    // sendEmail(user.email, link);
+    sendResponse(res, { message: 'Email sent successfully' });
+  } catch (err) {
+    sendError({ res, error: err, code: 500 });
+  }
+}
+
+export async function handleResetPassword(req: Request, res: Response) {
+  try {
+    const { token, user, password } = req.body;
+
+    const resetToken = await Token.findOne({ user: user });
+    if (!resetToken) throw new Error('Invalid or expired token');
+
+    const isValid = await bcrypt.compare(token, resetToken.token);
+    if (!isValid) {
+      throw new Error('Invalid or expired token');
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
+
+    await User.findByIdAndUpdate(user, { password: hash });
+
+    // sendEmail(user.email, 'Changed password');
+    sendResponse(res, { message: 'Success, updated password' });
+  } catch (err) {
+    sendError({ res, error: err, code: 500 });
   }
 }
 
