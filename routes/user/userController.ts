@@ -240,7 +240,7 @@ export async function handleResetPassword(req: Request, res: Response) {
 
 export async function handleChangeUserRole(req: Request, res: Response) {
   try {
-    const permission = ac.can(req.user.role).updateAny('citizen');
+    const permission = ac.can(req.user.role).updateAny('user');
     if (!permission.granted) throw new Error('can not access resource');
 
     const { id, role } = req.body;
@@ -248,7 +248,7 @@ export async function handleChangeUserRole(req: Request, res: Response) {
     const user = await User.findByIdAndUpdate(id, { role }, { new: true });
     if (!user) throw new Error('user not found');
 
-    sendResponse(res, user);
+    sendResponse(res, { message: 'Successfully changed user role' });
   } catch (handleAddUserRoleError) {
     sendError({
       res,

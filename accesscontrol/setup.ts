@@ -23,6 +23,7 @@ ac.grant(ROLES.SUPER_ADMIN)
   .extend(ROLES.ADMIN)
   .createAny('admin')
   .createAny('super admin')
-  .updateAny('citizen');
+  .updateAny('citizen')
+  .updateAny('user');
 
 export default ac;
