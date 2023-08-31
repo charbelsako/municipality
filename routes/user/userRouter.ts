@@ -9,6 +9,7 @@ import {
   getUserProfile,
   handleResetPasswordRequest,
   handleResetPassword,
+  handleGetAllUsers,
 } from './userController';
 
 const router = express.Router();
@@ -86,5 +87,13 @@ router.post('/reset-password', handleResetPasswordRequest);
  * @method POST
  */
 router.post('/reset-password', handleResetPassword);
+
+/**
+ * @route /api/v1/user/all
+ * @desc retrieves all users
+ * @access Super Admins only
+ * @method GET
+ */
+router.get('/all', verifyJWT, handleGetAllUsers);
 
 export default router;

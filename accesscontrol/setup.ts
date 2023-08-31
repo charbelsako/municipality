@@ -14,16 +14,14 @@ ac.grant(ROLES.CITIZEN)
 ac.grant(ROLES.ADMIN)
   .extend(ROLES.CITIZEN)
   .updateAny('document')
-  .readAny('document')
-  .createAny('citizen')
-  // .updateAny('citizen')
-  .readAny('citizen');
+  .readAny('document');
 
 ac.grant(ROLES.SUPER_ADMIN)
   .extend(ROLES.ADMIN)
   .createAny('admin')
   .createAny('super admin')
   .updateAny('citizen')
-  .updateAny('user');
+  .updateAny('user')
+  .readAny('user');
 
 export default ac;

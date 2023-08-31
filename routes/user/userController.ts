@@ -302,3 +302,19 @@ export async function getUserProfile(req: Request, res: Response) {
     });
   }
 }
+
+export async function handleGetAllUsers(req: Request, res: Response) {
+  try {
+    const permission = ac.can(req.user.role).readAny('user');
+    if (!permission.granted) throw new Error('can not access resource');
+
+    const users = await User.find({}).select('name email');
+    sendResponse(res, users);
+  } catch (err) {
+    sendError({
+      res,
+      error: err,
+      code: statusCodes.SERVER_ERROR,
+    });
+  }
+}
