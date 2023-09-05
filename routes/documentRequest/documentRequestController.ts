@@ -46,10 +46,7 @@ export async function handleAddStatementDocument(req: Request, res: Response) {
   }
 }
 
-export async function handleViewStatementDocuments(
-  req: Request,
-  res: Response
-) {
+export async function handleViewAllDocuments(req: Request, res: Response) {
   try {
     const permission = ac.can(req.user.role).readAny('document');
 
@@ -57,9 +54,12 @@ export async function handleViewStatementDocuments(
       throw new Error('You do not have permission to access this resource');
     }
 
-    const documents = await DocumentRequest.find({
-      type: DOCUMENT_TYPES.STATEMENT,
-    });
+    const { page } = req.query;
+
+    const documents = await DocumentRequest.paginate(
+      {},
+      { page, limit: 10, sort: { _id: -1 } }
+    );
 
     sendResponse(res, documents);
   } catch (handleViewStatementDocumentsError) {
@@ -79,13 +79,16 @@ export async function handleDocumentMarkAsDone(req: Request, res: Response) {
     }
 
     const { id } = req.body;
-    const document = await DocumentRequest.findByIdAndUpdate(
-      id,
-      {
-        status: DocumentStatus.DONE,
-      },
-      { new: true }
-    );
+    const document = await DocumentRequest.findByIdAndUpdate(id);
+
+    if (!document) throw new Error('document not found');
+
+    if (document.status !== DocumentStatus.PENDING) {
+      throw new Error(`Cannot reject document, status ${document.status}`);
+    }
+
+    document.status = DocumentStatus.DONE;
+    await document.save();
 
     sendResponse(res, document);
   } catch (err) {
@@ -104,13 +107,16 @@ export async function handleDocumentMarkAsRejected(
     }
 
     const { id } = req.body;
-    const document = await DocumentRequest.findByIdAndUpdate(
-      id,
-      {
-        status: DocumentStatus.REJECTED,
-      },
-      { new: true }
-    );
+    const document = await DocumentRequest.findById(id);
+
+    if (!document) throw new Error('document not found');
+
+    if (document.status !== DocumentStatus.PENDING) {
+      throw new Error(`Cannot reject document, status ${document.status}`);
+    }
+
+    document.status = DocumentStatus.REJECTED;
+    await document.save();
 
     sendResponse(res, document);
   } catch (err) {
@@ -121,13 +127,19 @@ export async function handleDocumentMarkAsRejected(
 export async function handleProcessDocuments(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const request = await DocumentRequest.findByIdAndUpdate(id, {
-      // necessary fields
-    });
+    const { idNumber, submittedAt } = req.body;
+    const document = await DocumentRequest.findByIdAndUpdate(
+      id,
+      {
+        idNumber,
+        submittedAt,
+      },
+      { new: true }
+    );
 
-    if (!request) throw new Error('Request not found');
+    if (!document) throw new Error('Document not found');
 
-    sendResponse(res, request);
+    sendResponse(res, document);
   } catch (err) {
     sendError({
       res,

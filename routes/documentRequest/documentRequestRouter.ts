@@ -4,9 +4,10 @@ import {
   getAllRequests,
   handleAddStatementDocument,
   handleDocumentMarkAsDone,
-  handleViewStatementDocuments,
   handleDocumentMarkAsRejected,
   getDocumentDetail,
+  handleViewAllDocuments,
+  handleProcessDocuments,
 } from './documentRequestController';
 
 const router = express.Router();
@@ -29,11 +30,7 @@ router.post(
  * @access private Admins only
  * @method GET
  */
-router.get(
-  '/view-statement-documents',
-  verifyJWT,
-  handleViewStatementDocuments
-);
+router.get('/view-all-documents', verifyJWT, handleViewAllDocuments);
 
 /**
  * @route /api/v1/documents/:id/mark-as-done
@@ -42,11 +39,7 @@ router.get(
  * @access private Admins only
  * @method PATCH
  */
-router.patch(
-  '/statement-document/:id/mark-as-done',
-  verifyJWT,
-  handleDocumentMarkAsDone
-);
+router.patch('/:id/mark-as-done', verifyJWT, handleDocumentMarkAsDone);
 
 /**
  * @route /api/v1/documents/:id/mark-as-rejected
@@ -72,5 +65,13 @@ router.get('/my', verifyJWT, getAllRequests);
  * @method GET
  */
 router.get('/:id', verifyJWT, getDocumentDetail);
+
+/**
+ * @route /api/v1/documents/:id/process
+ * @desc processes documents (for now only statement documents)
+ * @access Admins only
+ * @method POST
+ */
+router.post('/:id/process', verifyJWT, handleProcessDocuments);
 
 export default router;

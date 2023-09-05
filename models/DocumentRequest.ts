@@ -1,5 +1,6 @@
-import { Schema, model } from 'mongoose';
+import { Document, Model, Schema, model } from 'mongoose';
 import { autoIncrement } from 'mongoose-plugin-autoinc';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 enum DocumentTypes {
   STATEMENT = 'افاده',
@@ -11,7 +12,7 @@ enum DocumentTypes {
   BUILDING_PERMIT_RENEWAL = 'طلب تجديد ترخيص بالبناء ',
 }
 
-type IDocumentRequest = {
+export interface IDocumentRequest extends Document {
   type: DocumentTypes;
   callee: string; // المستدعي
   address: string;
@@ -23,7 +24,7 @@ type IDocumentRequest = {
   attachedDocuments: number[]; // ! not sure how this will be handled
   notes: string;
   status: string;
-};
+}
 
 export const DOCUMENT_TYPES = {
   STATEMENT: 'افاده',
@@ -71,7 +72,13 @@ DocumentRequestSchema.plugin(autoIncrement, {
   startAt: 100000,
 });
 
-export const DocumentRequest = model<IDocumentRequest>(
+DocumentRequestSchema.plugin(mongoosePaginate);
+
+interface DocumentModel extends Model<IDocumentRequest> {
+  paginate: Function;
+}
+
+export const DocumentRequest = model<IDocumentRequest, DocumentModel>(
   'documentRequest',
   DocumentRequestSchema
 );
