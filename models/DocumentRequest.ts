@@ -40,6 +40,7 @@ export const DOCUMENT_TYPES = {
 export const DocumentStatus = {
   DONE: 'Done',
   PENDING: 'Pending',
+  SUBMITTED: 'Submitted',
   REJECTED: 'Rejected',
 };
 

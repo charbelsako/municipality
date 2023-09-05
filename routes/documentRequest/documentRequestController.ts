@@ -83,8 +83,10 @@ export async function handleDocumentMarkAsDone(req: Request, res: Response) {
 
     if (!document) throw new Error('document not found');
 
-    if (document.status !== DocumentStatus.PENDING) {
-      throw new Error(`Cannot reject document, status ${document.status}`);
+    if (document.status !== DocumentStatus.SUBMITTED) {
+      throw new Error(
+        `Cannot mark as done, status ${document.status}, should be ${DocumentStatus.SUBMITTED}`
+      );
     }
 
     document.status = DocumentStatus.DONE;
@@ -111,10 +113,6 @@ export async function handleDocumentMarkAsRejected(
 
     if (!document) throw new Error('document not found');
 
-    if (document.status !== DocumentStatus.PENDING) {
-      throw new Error(`Cannot reject document, status ${document.status}`);
-    }
-
     document.status = DocumentStatus.REJECTED;
     await document.save();
 
@@ -133,6 +131,7 @@ export async function handleProcessDocuments(req: Request, res: Response) {
       {
         idNumber,
         submittedAt,
+        status: DocumentStatus.SUBMITTED,
       },
       { new: true }
     );
