@@ -40,6 +40,9 @@ export const ROLES = {
   SUPER_ADMIN: 'Super Admin', // Reserved for us developers
   ADMIN: 'Admin', // For municipality people
   CITIZEN: 'Citizen',
+  // ! still not defined yet
+  // EDITOR: 'Editor',
+  // DATA_ENTRY: 'Data Entry',
 };
 
 export interface IUser {
