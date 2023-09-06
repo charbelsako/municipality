@@ -12,7 +12,8 @@ ac.grant(ROLES.CITIZEN)
   .createAny('payment');
 
 ac.grant(ROLES.ADMIN)
-  .updateAny('document')
+  .updateAny('document-status')
+  .updateAny('document-process')
   .readAny('document')
   .readAny('user')
   .updateAny('user-status');

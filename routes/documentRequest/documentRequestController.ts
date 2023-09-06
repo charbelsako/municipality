@@ -73,7 +73,7 @@ export async function getAllDocuments(req: Request, res: Response) {
 
 export async function handleDocumentMarkAsDone(req: Request, res: Response) {
   try {
-    const permission = ac.can(req.user.role).updateAny('document');
+    const permission = ac.can(req.user.role).updateAny('document-status');
     if (!permission) {
       throw new Error('You do not have permission to access this resource');
     }
@@ -103,7 +103,7 @@ export async function handleDocumentMarkAsRejected(
   res: Response
 ) {
   try {
-    const permission = ac.can(req.user.role).updateAny('document');
+    const permission = ac.can(req.user.role).updateAny('document-status');
     if (!permission) {
       throw new Error('You do not have permission to access this resource');
     }
@@ -124,6 +124,11 @@ export async function handleDocumentMarkAsRejected(
 
 export async function handleProcessDocuments(req: Request, res: Response) {
   try {
+    const permission = ac.can(req.user.role).updateAny('document-process');
+    if (!permission) {
+      throw new Error('You do not have permission to access this resource');
+    }
+
     const { id } = req.params;
     const { idNumber, submittedAt } = req.body;
     const document = await DocumentRequest.findByIdAndUpdate(
