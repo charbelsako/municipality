@@ -308,8 +308,39 @@ export async function handleGetAllUsers(req: Request, res: Response) {
     const permission = ac.can(req.user.role).readAny('user');
     if (!permission.granted) throw new Error('can not access resource');
 
-    const users = await User.find({}).select('name email');
+    const users = await User.find({}).select('name email isDeleted');
     sendResponse(res, users);
+  } catch (err) {
+    sendError({
+      res,
+      error: err,
+      code: statusCodes.SERVER_ERROR,
+    });
+  }
+}
+
+export async function handleDeleteUser(req: Request, res: Response) {
+  try {
+    const permission = ac.can(req.user.role).updateAny('user');
+    if (!permission.granted) throw new Error('can not access resource');
+
+    const { id } = req.params;
+    await User.findByIdAndUpdate(id, { isDeleted: true, refreshToken: '' });
+    sendResponse(res, { message: 'Successfully deleted a user' });
+  } catch (err) {
+    sendError({
+      res,
+      error: err,
+      code: statusCodes.SERVER_ERROR,
+    });
+  }
+}
+
+export async function handleEnableUser(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    await User.findByIdAndUpdate(id, { isDeleted: false });
+    sendResponse(res, { message: 'Successfully enabled a user' });
   } catch (err) {
     sendError({
       res,

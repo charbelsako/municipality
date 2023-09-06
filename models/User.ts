@@ -56,6 +56,7 @@ export interface IUser {
   sex: string;
   recordInfo: IRecordInfo;
   dateOfBirth: Date;
+  isDeleted: Boolean;
 }
 
 export interface IName {
@@ -104,6 +105,7 @@ const userSchema = new Schema(
       building: String,
       floor: String,
     },
+    isDeleted: { type: Boolean, default: false },
   },
   {
     timestamps: true,

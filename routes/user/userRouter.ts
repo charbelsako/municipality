@@ -10,6 +10,8 @@ import {
   handleResetPasswordRequest,
   handleResetPassword,
   handleGetAllUsers,
+  handleDeleteUser,
+  handleEnableUser,
 } from './userController';
 
 const router = express.Router();
@@ -95,5 +97,21 @@ router.post('/reset-password', handleResetPassword);
  * @method GET
  */
 router.get('/all', verifyJWT, handleGetAllUsers);
+
+/**
+ * @route /api/v1/user/:id/delete
+ * @desc Sets a user as deleted and disallows login
+ * @access Admins only
+ * @method DELETE
+ */
+router.delete('/:id/delete', verifyJWT, handleDeleteUser);
+
+/**
+ * @route /api/v1/user/:id/enable
+ * @desc Sets a user as not deleted
+ * @access Admins only
+ * @method PATCH
+ */
+router.patch('/:id/enable', verifyJWT, handleEnableUser);
 
 export default router;

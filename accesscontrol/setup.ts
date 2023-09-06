@@ -11,7 +11,11 @@ ac.grant(ROLES.CITIZEN)
   .updateOwn('citizen')
   .createAny('payment');
 
-ac.grant(ROLES.ADMIN).updateAny('document').readAny('document');
+ac.grant(ROLES.ADMIN)
+  .updateAny('document')
+  .readAny('document')
+  .updateAny('user')
+  .readAny('user');
 
 ac.grant(ROLES.SUPER_ADMIN)
   .extend(ROLES.ADMIN)
