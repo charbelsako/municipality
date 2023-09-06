@@ -14,8 +14,8 @@ ac.grant(ROLES.CITIZEN)
 ac.grant(ROLES.ADMIN)
   .updateAny('document')
   .readAny('document')
-  .updateAny('user')
-  .readAny('user');
+  .readAny('user')
+  .updateAny('user-status');
 
 ac.grant(ROLES.SUPER_ADMIN)
   .extend(ROLES.ADMIN)
@@ -23,6 +23,7 @@ ac.grant(ROLES.SUPER_ADMIN)
   .createAny('super admin')
   .updateAny('citizen')
   .updateAny('user')
+  .updateAny('user-role')
   .readAny('user');
 
 export default ac;
