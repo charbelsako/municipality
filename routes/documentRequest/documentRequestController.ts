@@ -46,7 +46,7 @@ export async function handleAddStatementDocument(req: Request, res: Response) {
   }
 }
 
-export async function handleViewAllDocuments(req: Request, res: Response) {
+export async function getAllDocuments(req: Request, res: Response) {
   try {
     const permission = ac.can(req.user.role).readAny('document');
 
@@ -62,10 +62,10 @@ export async function handleViewAllDocuments(req: Request, res: Response) {
     );
 
     sendResponse(res, documents);
-  } catch (handleViewStatementDocumentsError) {
+  } catch (getAllDocumentsError) {
     sendError({
       res,
-      error: handleViewStatementDocumentsError,
+      error: getAllDocumentsError,
       code: statusCodes.SERVER_ERROR,
     });
   }
@@ -148,15 +148,15 @@ export async function handleProcessDocuments(req: Request, res: Response) {
   }
 }
 
-export async function getAllRequests(req: Request, res: Response) {
+export async function getMyRequests(req: Request, res: Response) {
   try {
     const requests = await DocumentRequest.find({ callee: req.user._id });
 
     sendResponse(res, requests);
-  } catch (err) {
+  } catch (getMyRequestsError) {
     sendError({
       res,
-      error: err,
+      error: getMyRequestsError,
       code: statusCodes.SERVER_ERROR,
     });
   }

@@ -1,13 +1,13 @@
 import express, { Request, Response } from 'express';
 import { verifyJWT } from '../../middleware/verifyJWT';
 import {
-  getAllRequests,
   handleAddStatementDocument,
   handleDocumentMarkAsDone,
   handleDocumentMarkAsRejected,
   getDocumentDetail,
-  handleViewAllDocuments,
   handleProcessDocuments,
+  getMyRequests,
+  getAllDocuments,
 } from './documentRequestController';
 
 const router = express.Router();
@@ -23,14 +23,6 @@ router.post(
   verifyJWT,
   handleAddStatementDocument
 );
-
-/**
- * @route /api/v1/documents/view-statement-documents
- * @desc Retrieves all statement documents
- * @access private Admins only
- * @method GET
- */
-router.get('/view-all-documents', verifyJWT, handleViewAllDocuments);
 
 /**
  * @route /api/v1/documents/:id/mark-as-done
@@ -51,12 +43,21 @@ router.patch('/:id/mark-as-done', verifyJWT, handleDocumentMarkAsDone);
 router.patch('/:id/mark-as-rejected', verifyJWT, handleDocumentMarkAsRejected);
 
 /**
+ * @route /api/v1/documents/all
+ * @desc Retrieves all documents for all users
+ * @param page number
+ * @access private Admin
+ * @method GET
+ */
+router.get('/all', verifyJWT, getAllDocuments);
+
+/**
  * @route /api/v1/documents/my
  * @desc Retrieves all documents for the current user
  * @access private Signed in users
  * @method GET
  */
-router.get('/my', verifyJWT, getAllRequests);
+router.get('/my', verifyJWT, getMyRequests);
 
 /**
  * @route /api/v1/documents/:id
