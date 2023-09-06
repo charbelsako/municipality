@@ -240,7 +240,7 @@ export async function handleResetPassword(req: Request, res: Response) {
 
 export async function handleChangeUserRole(req: Request, res: Response) {
   try {
-    const permission = ac.can(req.user.role).updateAny('user');
+    const permission = ac.can(req.user.role).updateAny('user-role');
     if (!permission.granted) throw new Error('can not access resource');
 
     const { id, role } = req.body;
@@ -321,7 +321,7 @@ export async function handleGetAllUsers(req: Request, res: Response) {
 
 export async function handleDeleteUser(req: Request, res: Response) {
   try {
-    const permission = ac.can(req.user.role).updateAny('user');
+    const permission = ac.can(req.user.role).updateAny('user-status');
     if (!permission.granted) throw new Error('can not access resource');
 
     const { id } = req.params;
@@ -338,6 +338,9 @@ export async function handleDeleteUser(req: Request, res: Response) {
 
 export async function handleEnableUser(req: Request, res: Response) {
   try {
+    const permission = ac.can(req.user.role).updateAny('user-status');
+    if (!permission.granted) throw new Error('can not access resource');
+
     const { id } = req.params;
     await User.findByIdAndUpdate(id, { isDeleted: false });
     sendResponse(res, { message: 'Successfully enabled a user' });
