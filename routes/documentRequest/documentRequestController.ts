@@ -155,7 +155,11 @@ export async function handleProcessDocuments(req: Request, res: Response) {
 
 export async function getMyRequests(req: Request, res: Response) {
   try {
-    const requests = await DocumentRequest.find({ callee: req.user._id });
+    const { page } = req.query;
+    const requests = await DocumentRequest.paginate(
+      { callee: req.user._id },
+      { page }
+    );
 
     sendResponse(res, requests);
   } catch (getMyRequestsError) {

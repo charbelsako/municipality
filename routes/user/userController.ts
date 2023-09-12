@@ -311,7 +311,11 @@ export async function handleGetAllUsers(req: Request, res: Response) {
 
     const users = await User.paginate(
       {},
-      { page, limit: 10, select: 'name email isDeleted' }
+      {
+        page,
+        limit: 10,
+        select: 'name email isDeleted',
+      }
     );
     sendResponse(res, users);
   } catch (err) {
