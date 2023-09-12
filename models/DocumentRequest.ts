@@ -38,10 +38,10 @@ export const DOCUMENT_TYPES = {
 };
 
 export const DocumentStatus = {
-  DONE: 'Done',
-  PENDING: 'Pending',
-  SUBMITTED: 'Submitted',
-  REJECTED: 'Rejected',
+  DONE: 'منجز',
+  PENDING: 'قيد الانتظار',
+  SUBMITTED: 'قدمم',
+  REJECTED: 'مرفوض',
 };
 
 const DocumentRequestSchema = new Schema(
