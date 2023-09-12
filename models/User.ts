@@ -1,4 +1,5 @@
-import { Schema, model } from 'mongoose';
+import { Model, Schema, model } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 export const SECTS = {
   ARMENIAN_ORTHODOX: 'ارمن ارثوذكس',
@@ -112,6 +113,12 @@ const userSchema = new Schema(
   }
 );
 
-const User = model<IUser>('user', userSchema);
+interface UserModel extends Model<IUser> {
+  paginate: Function;
+}
+
+userSchema.plugin(mongoosePaginate);
+
+const User = model<IUser, UserModel>('user', userSchema);
 
 export default User;

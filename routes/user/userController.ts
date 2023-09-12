@@ -305,10 +305,14 @@ export async function getUserProfile(req: Request, res: Response) {
 
 export async function handleGetAllUsers(req: Request, res: Response) {
   try {
+    const { page } = req.query;
     const permission = ac.can(req.user.role).readAny('user');
     if (!permission.granted) throw new Error('can not access resource');
 
-    const users = await User.find({}).select('name email isDeleted');
+    const users = await User.paginate(
+      {},
+      { page, limit: 10, select: 'name email isDeleted' }
+    );
     sendResponse(res, users);
   } catch (err) {
     sendError({
