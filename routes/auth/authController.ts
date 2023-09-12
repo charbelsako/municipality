@@ -16,7 +16,7 @@ export async function handleLogin(req: Request, res: Response) {
         code: statusCodes.BAD_REQUEST,
       });
 
-    const foundUser: any = await User.findOne({ email });
+    const foundUser: any = await User.findOne({ email, isDeleted: false });
     if (!foundUser) return sendError({ res, code: statusCodes.UNAUTHORIZED }); //Unauthorized
 
     const match = await bcrypt.compare(password, foundUser.password);

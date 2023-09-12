@@ -20,9 +20,12 @@ export async function sendError({
     return res.status(code).send(error);
   }
 
-  return res
-    .status(code)
-    .send({ error: error.message || 'Something went wrong' });
+  if (error.message) {
+    return res
+      .status(code)
+      .send({ error: error.message || 'Something went wrong' });
+  }
+  res.status(code).send({ error: error });
 }
 
 export async function sendResponse(res: Response, data: any) {

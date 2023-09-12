@@ -12,16 +12,19 @@ ac.grant(ROLES.CITIZEN)
   .createAny('payment');
 
 ac.grant(ROLES.ADMIN)
-  .extend(ROLES.CITIZEN)
-  .updateAny('document')
+  .updateAny('document-status')
+  .updateAny('document-process')
   .readAny('document')
-  .createAny('citizen')
-  // .updateAny('citizen')
-  .readAny('citizen');
+  .readAny('user')
+  .updateAny('user-status');
 
 ac.grant(ROLES.SUPER_ADMIN)
   .extend(ROLES.ADMIN)
   .createAny('admin')
-  .updateAny('citizen');
+  .createAny('super admin')
+  .updateAny('citizen')
+  .updateAny('user')
+  .updateAny('user-role')
+  .readAny('user');
 
 export default ac;

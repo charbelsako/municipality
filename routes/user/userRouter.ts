@@ -7,6 +7,11 @@ import {
   handleCreateCitizen,
   handleUpdateUser,
   getUserProfile,
+  handleResetPasswordRequest,
+  handleResetPassword,
+  handleGetAllUsers,
+  handleDeleteUser,
+  handleEnableUser,
 } from './userController';
 
 const router = express.Router();
@@ -28,7 +33,15 @@ router.post('/create-admin', verifyJWT, handleCreateAdmin);
 router.post('/create-citizen', verifyJWT, handleCreateCitizen);
 
 /**
- * @route /api/v1/user/handleUpdatePassword
+ * @route /api/v1/user/signup
+ * @desc creates a normal citizen account
+ * @access Public
+ * @method POST
+ */
+router.post('/signup', handleCreateCitizen);
+
+/**
+ * @route /api/v1/user/update-password
  * @desc update the password of a user
  * @access All signed in users
  * @method POST
@@ -60,5 +73,45 @@ router.get('/profile', verifyJWT, getUserProfile);
  * @method POST
  */
 router.post('/change-role', verifyJWT, handleChangeUserRole);
+
+/**
+ * @route /api/v1/user/reset-password-request
+ * @desc Submits a request to reset a user's own password
+ * @access Public
+ * @method POST
+ */
+router.post('/reset-password', handleResetPasswordRequest);
+
+/**
+ * @route /api/v1/user/reset-password
+ * @desc Validates token and resets a user's own password
+ * @access Public
+ * @method POST
+ */
+router.post('/reset-password', handleResetPassword);
+
+/**
+ * @route /api/v1/user/all
+ * @desc retrieves all users
+ * @access Super Admins only
+ * @method GET
+ */
+router.get('/all', verifyJWT, handleGetAllUsers);
+
+/**
+ * @route /api/v1/user/:id/delete
+ * @desc Sets a user as deleted and disallows login
+ * @access Admins only
+ * @method DELETE
+ */
+router.delete('/:id/delete', verifyJWT, handleDeleteUser);
+
+/**
+ * @route /api/v1/user/:id/enable
+ * @desc Sets a user as not deleted
+ * @access Admins only
+ * @method PATCH
+ */
+router.patch('/:id/enable', verifyJWT, handleEnableUser);
 
 export default router;

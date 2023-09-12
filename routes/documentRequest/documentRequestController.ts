@@ -46,10 +46,7 @@ export async function handleAddStatementDocument(req: Request, res: Response) {
   }
 }
 
-export async function handleViewStatementDocuments(
-  req: Request,
-  res: Response
-) {
+export async function getAllDocuments(req: Request, res: Response) {
   try {
     const permission = ac.can(req.user.role).readAny('document');
 
@@ -57,15 +54,18 @@ export async function handleViewStatementDocuments(
       throw new Error('You do not have permission to access this resource');
     }
 
-    const documents = await DocumentRequest.find({
-      type: DOCUMENT_TYPES.STATEMENT,
-    });
+    const { page } = req.query;
+
+    const documents = await DocumentRequest.paginate(
+      {},
+      { page, limit: 10, sort: { _id: -1 } }
+    );
 
     sendResponse(res, documents);
-  } catch (handleViewStatementDocumentsError) {
+  } catch (getAllDocumentsError) {
     sendError({
       res,
-      error: handleViewStatementDocumentsError,
+      error: getAllDocumentsError,
       code: statusCodes.SERVER_ERROR,
     });
   }
@@ -73,19 +73,24 @@ export async function handleViewStatementDocuments(
 
 export async function handleDocumentMarkAsDone(req: Request, res: Response) {
   try {
-    const permission = ac.can(req.user.role).updateAny('document');
+    const permission = ac.can(req.user.role).updateAny('document-status');
     if (!permission) {
       throw new Error('You do not have permission to access this resource');
     }
 
     const { id } = req.body;
-    const document = await DocumentRequest.findByIdAndUpdate(
-      id,
-      {
-        status: DocumentStatus.DONE,
-      },
-      { new: true }
-    );
+    const document = await DocumentRequest.findByIdAndUpdate(id);
+
+    if (!document) throw new Error('document not found');
+
+    if (document.status !== DocumentStatus.SUBMITTED) {
+      throw new Error(
+        `Cannot mark as done, status ${document.status}, should be ${DocumentStatus.SUBMITTED}`
+      );
+    }
+
+    document.status = DocumentStatus.DONE;
+    await document.save();
 
     sendResponse(res, document);
   } catch (err) {
@@ -98,19 +103,18 @@ export async function handleDocumentMarkAsRejected(
   res: Response
 ) {
   try {
-    const permission = ac.can(req.user.role).updateAny('document');
+    const permission = ac.can(req.user.role).updateAny('document-status');
     if (!permission) {
       throw new Error('You do not have permission to access this resource');
     }
 
     const { id } = req.body;
-    const document = await DocumentRequest.findByIdAndUpdate(
-      id,
-      {
-        status: DocumentStatus.REJECTED,
-      },
-      { new: true }
-    );
+    const document = await DocumentRequest.findById(id);
+
+    if (!document) throw new Error('document not found');
+
+    document.status = DocumentStatus.REJECTED;
+    await document.save();
 
     sendResponse(res, document);
   } catch (err) {
@@ -120,14 +124,26 @@ export async function handleDocumentMarkAsRejected(
 
 export async function handleProcessDocuments(req: Request, res: Response) {
   try {
+    const permission = ac.can(req.user.role).updateAny('document-process');
+    if (!permission) {
+      throw new Error('You do not have permission to access this resource');
+    }
+
     const { id } = req.params;
-    const request = await DocumentRequest.findByIdAndUpdate(id, {
-      // necessary fields
-    });
+    const { idNumber, submittedAt } = req.body;
+    const document = await DocumentRequest.findByIdAndUpdate(
+      id,
+      {
+        idNumber,
+        submittedAt,
+        status: DocumentStatus.SUBMITTED,
+      },
+      { new: true }
+    );
 
-    if (!request) throw new Error('Request not found');
+    if (!document) throw new Error('Document not found');
 
-    sendResponse(res, request);
+    sendResponse(res, document);
   } catch (err) {
     sendError({
       res,
@@ -137,15 +153,19 @@ export async function handleProcessDocuments(req: Request, res: Response) {
   }
 }
 
-export async function getAllRequests(req: Request, res: Response) {
+export async function getMyRequests(req: Request, res: Response) {
   try {
-    const requests = await DocumentRequest.find({ callee: req.user._id });
+    const { page } = req.query;
+    const requests = await DocumentRequest.paginate(
+      { callee: req.user._id },
+      { page }
+    );
 
     sendResponse(res, requests);
-  } catch (err) {
+  } catch (getMyRequestsError) {
     sendError({
       res,
-      error: err,
+      error: getMyRequestsError,
       code: statusCodes.SERVER_ERROR,
     });
   }
@@ -158,12 +178,12 @@ export async function getDocumentDetail(req: Request, res: Response) {
 
     let document;
     if (permission.granted) {
-      document = await DocumentRequest.findById(id);
+      document = await DocumentRequest.findById(id).populate('callee', 'name');
     } else {
       document = await DocumentRequest.findOne({
         _id: id,
         callee: req.user._id,
-      });
+      }).populate('callee', 'name');
     }
 
     if (!document) {

@@ -1,4 +1,5 @@
-import { Schema, model } from 'mongoose';
+import { Model, Schema, model } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 export const SECTS = {
   ARMENIAN_ORTHODOX: 'ارمن ارثوذكس',
@@ -40,6 +41,9 @@ export const ROLES = {
   SUPER_ADMIN: 'Super Admin', // Reserved for us developers
   ADMIN: 'Admin', // For municipality people
   CITIZEN: 'Citizen',
+  // ! still not defined yet
+  // EDITOR: 'Editor',
+  // DATA_ENTRY: 'Data Entry',
 };
 
 export interface IUser {
@@ -53,6 +57,7 @@ export interface IUser {
   sex: string;
   recordInfo: IRecordInfo;
   dateOfBirth: Date;
+  isDeleted: Boolean;
 }
 
 export interface IName {
@@ -92,7 +97,7 @@ const userSchema = new Schema(
       number: Number,
     },
     phoneNumberList: [String],
-    email: String,
+    email: { type: String, unique: true },
     role: { type: String, enum: Object.values(ROLES) },
     refreshToken: { type: String },
     address: {
@@ -101,12 +106,19 @@ const userSchema = new Schema(
       building: String,
       floor: String,
     },
+    isDeleted: { type: Boolean, default: false },
   },
   {
     timestamps: true,
   }
 );
 
-const User = model<IUser>('user', userSchema);
+interface UserModel extends Model<IUser> {
+  paginate: Function;
+}
+
+userSchema.plugin(mongoosePaginate);
+
+const User = model<IUser, UserModel>('user', userSchema);
 
 export default User;
